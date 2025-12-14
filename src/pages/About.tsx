@@ -7,7 +7,7 @@ import Footer from '@/components/Footer';
 import { cn } from '@/lib/utils';
 import { getImageUrl } from '@/lib/imageUtils';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 interface AboutContent {
   id: string;

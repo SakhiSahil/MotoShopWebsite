@@ -1,5 +1,5 @@
 // API configuration - change this URL when running backend locally
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 // Auth token management
 let authToken: string | null = localStorage.getItem('admin_token');
