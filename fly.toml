@@ -1,0 +1,32 @@
+# Fly.io Configuration
+# =====================
+# Deploy with: fly deploy
+
+app = "moto-shop-af"
+primary_region = "fra"
+
+[build]
+
+[env]
+  NODE_ENV = "production"
+  PORT = "3001"
+  # Frontend URL for CORS - update after first deploy
+  # FRONTEND_URL = "https://moto-shop-af.fly.dev"
+
+[http_service]
+  internal_port = 3001
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ["app"]
+
+[[vm]]
+  memory = "512mb"
+  cpu_kind = "shared"
+  cpus = 1
+
+# Persistent volume for SQLite database and uploads
+[mounts]
+  source = "data_volume"
+  destination = "/data"
