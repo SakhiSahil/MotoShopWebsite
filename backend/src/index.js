@@ -19,38 +19,21 @@ const aboutRoutes = require('./routes/about');
 const contactRoutes = require('./routes/contact');
 const faqRoutes = require('./routes/faq');
 
-// Determine upload directory based on environment
-const isProduction = process.env.NODE_ENV === 'production';
-const uploadsDir = process.env.UPLOAD_PATH || (isProduction ? '/data/uploads' : path.join(__dirname, '../uploads'));
+const app = express();
+const PORT = process.env.PORT || 3001;
 
-// Ensure uploads directory exists
+// Uploads directory
+const uploadsDir = process.env.UPLOAD_PATH || path.join(__dirname, '../uploads');
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
-const app = express();
-const PORT = process.env.PORT || 3001;
-
-// CORS configuration
-const corsOptions = {
-  origin: process.env.FRONTEND_URL || '*',
-  credentials: true,
-};
-
 // Middleware
-app.use(cors(corsOptions));
+app.use(cors({ origin: '*', credentials: true }));
 app.use(express.json());
 app.use('/uploads', express.static(uploadsDir));
 
-// Serve frontend static files in production
-if (isProduction) {
-  const frontendDist = path.join(__dirname, '../../dist');
-  if (fs.existsSync(frontendDist)) {
-    app.use(express.static(frontendDist));
-  }
-}
-
-// Routes
+// API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productsRoutes);
 app.use('/api/settings', settingsRoutes);
@@ -69,9 +52,11 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Moto Shop API is running' });
 });
 
-// Serve frontend for all non-API routes in production
-if (isProduction) {
-  const frontendDist = path.join(__dirname, '../../dist');
+// Serve frontend
+const frontendDist = path.join(__dirname, '../../dist');
+if (fs.existsSync(frontendDist)) {
+  app.use(express.static(frontendDist));
+
   app.get('*', (req, res) => {
     if (!req.path.startsWith('/api') && !req.path.startsWith('/uploads')) {
       res.sendFile(path.join(frontendDist, 'index.html'));
@@ -79,11 +64,10 @@ if (isProduction) {
   });
 }
 
-// Initialize database then start server
+// Start server
 initDatabase().then(() => {
   app.listen(PORT, () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
-    console.log(`📁 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`🚀 Server running on port ${PORT}`);
     console.log(`📂 Uploads: ${uploadsDir}`);
   });
 }).catch(err => {

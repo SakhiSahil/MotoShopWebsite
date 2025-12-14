@@ -2,25 +2,23 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# ---------- Backend deps ----------
+# Backend deps
 COPY backend/package*.json backend/
 RUN cd backend && npm install
 
-# ---------- Frontend deps ----------
+# Frontend deps
 COPY package*.json ./
 RUN npm install
 
-# ---------- Copy all source ----------
+# Copy all source
 COPY . .
 
-# ---------- Build frontend ----------
+# Build frontend (outputs /app/dist)
 RUN npm run build
 
-# ---------- Create uploads dir ----------
+# Ensure uploads dir
 RUN mkdir -p backend/uploads
 
-# ---------- Expose port ----------
 EXPOSE 3001
 
-# ---------- Start server ----------
 CMD ["node", "backend/src/index.js"]
