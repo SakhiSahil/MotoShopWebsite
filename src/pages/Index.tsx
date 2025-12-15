@@ -4,8 +4,10 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import HeroCarousel from '@/components/HeroCarousel';
-import FeaturedProducts from '@/components/FeaturedProducts';
+import AboutSection from '@/components/AboutSection';
 import StatsSection from '@/components/StatsSection';
+import VideoSection from '@/components/VideoSection';
+import FeaturedProducts from '@/components/FeaturedProducts';
 import BrandsSection from '@/components/BrandsSection';
 import FAQSection from '@/components/FAQSection';
 
@@ -29,10 +31,12 @@ const Index: React.FC = () => {
 
       <div className="min-h-screen bg-background">
         <Header />
-        <main>
+        <main className="pt-16 md:pt-20">
           <HeroCarousel />
-          <FeaturedProducts />
+          <AboutSection />
           <StatsSection />
+          <VideoSection />
+          <FeaturedProducts />
           <BrandsSection />
           <FAQSection />
         </main>

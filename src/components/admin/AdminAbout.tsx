@@ -24,7 +24,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, Save, Plus, Edit, Trash2 } from "lucide-react";
 import ImageUpload from "./ImageUpload";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 interface AboutContent {
   id: string;

@@ -1,4 +1,12 @@
-// API configuration - change this URL when running backend locally
+// API configuration
+//
+// IMPORTANT:
+// - In Lovable preview, `localhost` points to the preview container, NOT your own machine.
+// - So you must use a publicly reachable backend URL (e.g. https://your-app.fly.dev/api).
+//
+// Recommended env format:
+//   VITE_API_URL=https://your-backend-domain.com/api
+// (Do NOT use localhost when testing inside Lovable preview.)
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 // Auth token management
@@ -206,6 +214,18 @@ export const contactAPI = {
     apiRequest(`/contact/messages/${id}/read`, { method: 'PUT' }),
   deleteMessage: (id: number) =>
     apiRequest(`/contact/messages/${id}`, { method: 'DELETE' }),
+};
+
+// About API
+export const aboutAPI = {
+  get: () => apiRequest('/about/content'),
+  update: (data: { title: string; title_fa: string; content: string; content_fa: string; image?: string; years_experience?: string }) =>
+    apiRequest('/about/content', {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+  getValues: () => apiRequest('/about/values'),
+  getTeam: () => apiRequest('/about/team'),
 };
 
 // FAQ API

@@ -82,11 +82,19 @@ const transformBrand = (b: any): Brand => ({
   logo: b.logo,
 });
 
-// Check if API is available (cached)
+// Check if API is available (with retry mechanism)
 let apiAvailable: boolean | null = null;
+let lastCheck = 0;
+const CHECK_INTERVAL = 5000; // Retry every 5 seconds if failed
 
 const isAPIAvailable = async (): Promise<boolean> => {
-  if (apiAvailable !== null) return apiAvailable;
+  const now = Date.now();
+  // If we have a cached true result, use it
+  if (apiAvailable === true) return true;
+  // If we have a cached false result but enough time has passed, retry
+  if (apiAvailable === false && now - lastCheck < CHECK_INTERVAL) return false;
+  
+  lastCheck = now;
   apiAvailable = await checkAPIHealth();
   return apiAvailable;
 };
@@ -102,17 +110,13 @@ export const useProducts = () => {
       try {
         if (await isAPIAvailable()) {
           const data = await productsAPI.getAll();
-          if (data.length > 0) {
-            setProducts(data.map(transformProduct));
-          } else {
-            setProducts(staticMotorcycles);
-          }
+          setProducts(data.map(transformProduct));
         } else {
-          setProducts(staticMotorcycles);
+          setProducts([]);
         }
       } catch (err) {
-        console.warn('Using static data:', err);
-        setProducts(staticMotorcycles);
+        console.warn('Error fetching products:', err);
+        setProducts([]);
       } finally {
         setLoading(false);
       }
@@ -137,12 +141,10 @@ export const useProduct = (id: string) => {
           const data = await productsAPI.getById(id);
           setProduct(transformProduct(data));
         } else {
-          const staticProduct = staticMotorcycles.find(p => String(p.id) === id);
-          setProduct(staticProduct || null);
+          setProduct(null);
         }
       } catch (err) {
-        const staticProduct = staticMotorcycles.find(p => String(p.id) === id);
-        setProduct(staticProduct || null);
+        setProduct(null);
       } finally {
         setLoading(false);
       }
@@ -164,44 +166,12 @@ export const useSlides = () => {
       try {
         if (await isAPIAvailable()) {
           const data = await slidesAPI.getAll();
-          if (data.length > 0) {
-            setSlides(data.map(transformSlide));
-          } else {
-            // Fallback to featured products as slides
-            setSlides(staticMotorcycles.filter(m => m.featured).map((m, i) => ({
-              id: i,
-              title: m.name,
-              titleFa: m.nameFa,
-              subtitle: m.description,
-              subtitleFa: m.descriptionFa,
-              image: m.image,
-              buttonText: 'View Products',
-              buttonTextFa: 'مشاهده محصولات',
-              buttonLink: '/products',
-            })));
-          }
+          setSlides(data.map(transformSlide));
         } else {
-          setSlides(staticMotorcycles.filter(m => m.featured).map((m, i) => ({
-            id: i,
-            title: m.name,
-            titleFa: m.nameFa,
-            subtitle: m.description,
-            subtitleFa: m.descriptionFa,
-            image: m.image,
-            buttonText: 'View Products',
-            buttonTextFa: 'مشاهده محصولات',
-            buttonLink: '/products',
-          })));
+          setSlides([]);
         }
       } catch {
-        setSlides(staticMotorcycles.filter(m => m.featured).map((m, i) => ({
-          id: i,
-          title: m.name,
-          titleFa: m.nameFa,
-          subtitle: m.description,
-          subtitleFa: m.descriptionFa,
-          image: m.image,
-        })));
+        setSlides([]);
       } finally {
         setLoading(false);
       }
@@ -223,16 +193,12 @@ export const useBrands = () => {
       try {
         if (await isAPIAvailable()) {
           const data = await brandsAPI.getAll();
-          if (data.length > 0) {
-            setBrands(data.map(transformBrand));
-          } else {
-            setBrands(staticBrands);
-          }
+          setBrands(data.map(transformBrand));
         } else {
-          setBrands(staticBrands);
+          setBrands([]);
         }
       } catch {
-        setBrands(staticBrands);
+        setBrands([]);
       } finally {
         setLoading(false);
       }
@@ -416,6 +382,7 @@ export interface ContactSettings {
   address?: { value: string; value_fa: string };
   working_hours?: { value: string; value_fa: string };
   map_url?: { value: string; value_fa: string };
+  [key: string]: { value: string; value_fa: string } | undefined;
 }
 
 export const useContactSettings = () => {

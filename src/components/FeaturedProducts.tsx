@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, ArrowLeft, Loader2 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useProducts } from '@/hooks/useAPI';
+import { useScrollAnimation, getAnimationClasses } from '@/hooks/useScrollAnimation';
 import ProductCard from './ProductCard';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -11,10 +12,11 @@ const FeaturedProducts: React.FC = () => {
   const { t, isRTL } = useLanguage();
   const { products, loading } = useProducts();
   const featuredMotorcycles = products.filter(m => m.featured);
+  const { isVisible, sectionRef, scrollDirection } = useScrollAnimation({ threshold: 0.1 });
 
   if (loading) {
     return (
-      <section className="py-16 md:py-24 bg-background">
+      <section className="py-12 md:py-16 bg-card">
         <div className="container mx-auto px-4 flex justify-center">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
@@ -22,20 +24,28 @@ const FeaturedProducts: React.FC = () => {
     );
   }
 
+  // Don't render if no featured products
+  if (featuredMotorcycles.length === 0) {
+    return null;
+  }
+
   return (
-    <section className="py-16 md:py-24 bg-background">
+    <section ref={sectionRef} className="py-12 md:py-16 bg-card">
       <div className="container mx-auto px-4">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
+        <div className={cn(
+          "flex flex-col md:flex-row md:items-end md:justify-between gap-3 mb-8",
+          getAnimationClasses(isVisible, scrollDirection)
+        )}>
           <div>
             <h2 className={cn(
-              "section-title text-foreground mb-2",
+              "text-2xl md:text-3xl font-bold text-foreground mb-1",
               isRTL ? "font-vazir" : "font-orbitron"
             )}>
               {t('products.featured')}
             </h2>
             <p className={cn(
-              "text-muted-foreground text-lg",
+              "text-muted-foreground text-sm",
               isRTL ? "font-vazir" : ""
             )}>
               {t('products.subtitle')}
@@ -44,25 +54,28 @@ const FeaturedProducts: React.FC = () => {
           <Button
             asChild
             variant="outline"
+            size="sm"
             className={cn(
-              "self-start md:self-auto border-primary/50 text-foreground hover:bg-primary/10 gap-2",
+              "self-start md:self-auto border-primary/50 text-foreground hover:bg-primary/10 gap-2 text-xs",
               isRTL ? "font-vazir" : "font-orbitron"
             )}
           >
             <Link to="/products">
               {t('products.viewAll')}
-              {isRTL ? <ArrowLeft className="h-4 w-4" /> : <ArrowRight className="h-4 w-4" />}
+              {isRTL ? <ArrowLeft className="h-3 w-3" /> : <ArrowRight className="h-3 w-3" />}
             </Link>
           </Button>
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           {featuredMotorcycles.map((motorcycle, index) => (
             <div
               key={motorcycle.id}
-              className="animate-fade-in"
-              style={{ animationDelay: `${index * 100}ms` }}
+              className={cn(
+                getAnimationClasses(isVisible, scrollDirection)
+              )}
+              style={{ transitionDelay: isVisible ? `${(index + 1) * 80}ms` : '0ms' }}
             >
               <ProductCard motorcycle={motorcycle} />
             </div>

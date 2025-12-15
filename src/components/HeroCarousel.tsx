@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
-import { ChevronLeft, ChevronRight, Zap, Loader2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSlides, useProducts } from '@/hooks/useAPI';
 import { Button } from '@/components/ui/button';
@@ -10,7 +9,7 @@ import { cn } from '@/lib/utils';
 import { getImageUrl } from '@/lib/imageUtils';
 
 const HeroCarousel: React.FC = () => {
-  const { t, isRTL, language } = useLanguage();
+  const { isRTL, language } = useLanguage();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const { slides, loading: slidesLoading } = useSlides();
   const { products, loading: productsLoading } = useProducts();
@@ -42,183 +41,60 @@ const HeroCarousel: React.FC = () => {
     id: 0,
     title: m.name,
     titleFa: m.nameFa,
-    subtitle: m.description,
-    subtitleFa: m.descriptionFa,
     image: m.image,
-    buttonText: 'View Products',
-    buttonTextFa: 'مشاهده محصولات',
-    buttonLink: '/products',
-    power: m.power,
-    topSpeed: m.topSpeed,
-    engine: m.engine,
-    brand: m.brand,
-    brandFa: m.brandFa,
   }));
-
-  const currentSlide = displaySlides[selectedIndex] || displaySlides[0];
 
   if (slidesLoading && productsLoading) {
     return (
-      <section className="h-screen min-h-[600px] flex items-center justify-center bg-background">
+      <section className="h-[70vh] flex items-center justify-center bg-background">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </section>
     );
   }
 
   return (
-    <section className="relative h-screen min-h-[600px] overflow-hidden">
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background/50 z-[1] pointer-events-none" />
-      
-      {/* Carousel - only for background images */}
-      <div ref={emblaRef} className="h-full overflow-hidden absolute inset-0 z-0">
+    <section className="relative h-[70vh] w-full overflow-hidden">
+      {/* Carousel */}
+      <div ref={emblaRef} className="h-full w-full overflow-hidden">
         <div className="flex h-full">
           {displaySlides.map((slide, index) => (
             <div
               key={slide.id || index}
-              className="flex-[0_0_100%] min-w-0 relative"
+              className="flex-[0_0_100%] min-w-0 relative h-full"
             >
-              <div className="absolute inset-0">
-                <img
-                  src={getImageUrl(slide.image)}
-                  alt={language === 'fa' ? slide.titleFa : slide.title}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
-              </div>
+              <img
+                src={getImageUrl(slide.image)}
+                alt={language === 'fa' ? slide.titleFa : slide.title}
+                className="w-full h-full object-cover"
+                style={{ objectPosition: 'center center' }}
+              />
             </div>
           ))}
         </div>
       </div>
 
-      {/* Content Overlay - separate layer with proper z-index for clickable buttons */}
-      {currentSlide && (
-        <div className="relative z-10 h-full flex items-center">
-          <div className="container mx-auto px-4">
-            <div className="max-w-3xl animate-fade-in">
-              {/* Badge */}
-              {'brand' in currentSlide && (
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
-                  <Zap className="h-4 w-4 text-primary" />
-                  <span className={cn(
-                    "text-sm text-primary font-medium",
-                    isRTL ? "font-vazir" : "font-orbitron"
-                  )}>
-                    {language === 'fa' ? (currentSlide as any).brandFa : (currentSlide as any).brand}
-                  </span>
-                </div>
-              )}
-
-              {/* Title */}
-              <h1 className={cn(
-                "text-4xl md:text-5xl lg:text-7xl font-bold text-foreground mb-4 leading-tight",
-                isRTL ? "font-vazir" : "font-orbitron"
-              )}>
-                {language === 'fa' ? currentSlide.titleFa : currentSlide.title}
-              </h1>
-
-              {/* Description */}
-              <p className={cn(
-                "text-lg md:text-xl text-muted-foreground mb-6 max-w-xl",
-                isRTL ? "font-vazir" : ""
-              )}>
-                {language === 'fa' ? currentSlide.subtitleFa : currentSlide.subtitle}
-              </p>
-
-              {/* Specs (if available) */}
-              {'power' in currentSlide && (
-                <div className="flex flex-wrap gap-6 mb-8">
-                  <div className="text-center">
-                    <p className="text-2xl md:text-3xl font-bold text-primary">
-                      {(currentSlide as any).power}
-                    </p>
-                    <p className={cn(
-                      "text-sm text-muted-foreground",
-                      isRTL ? "font-vazir" : "font-orbitron"
-                    )}>
-                      {t('products.power')}
-                    </p>
-                  </div>
-                  <div className="w-px bg-border" />
-                  <div className="text-center">
-                    <p className="text-2xl md:text-3xl font-bold text-primary">
-                      {(currentSlide as any).topSpeed}
-                    </p>
-                    <p className={cn(
-                      "text-sm text-muted-foreground",
-                      isRTL ? "font-vazir" : "font-orbitron"
-                    )}>
-                      {t('products.speed')}
-                    </p>
-                  </div>
-                  <div className="w-px bg-border" />
-                  <div className="text-center">
-                    <p className="text-2xl md:text-3xl font-bold text-primary">
-                      {(currentSlide as any).engine}
-                    </p>
-                    <p className={cn(
-                      "text-sm text-muted-foreground",
-                      isRTL ? "font-vazir" : "font-orbitron"
-                    )}>
-                      {t('products.engine')}
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* Buttons - fully clickable */}
-              <div className="flex flex-wrap gap-4">
-                <Button
-                  asChild
-                  size="lg"
-                  className={cn(
-                    "racing-gradient text-primary-foreground hover:opacity-90 glow-effect",
-                    isRTL ? "font-vazir" : "font-orbitron"
-                  )}
-                >
-                  <Link to={currentSlide.buttonLink || "/products"}>
-                    {language === 'fa' ? (currentSlide.buttonTextFa || t('hero.cta')) : (currentSlide.buttonText || t('hero.cta'))}
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  variant="outline"
-                  size="lg"
-                  className={cn(
-                    "border-primary/50 text-foreground hover:bg-primary/10",
-                    isRTL ? "font-vazir" : "font-orbitron"
-                  )}
-                >
-                  <Link to="/contact">{t('hero.secondary')}</Link>
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Navigation Arrows */}
-      <div className="absolute bottom-1/2 left-4 right-4 z-20 flex justify-between pointer-events-none">
+      <div className="absolute top-1/2 -translate-y-1/2 left-4 right-4 z-10 flex justify-between pointer-events-none">
         <Button
           variant="ghost"
           size="icon"
           onClick={scrollPrev}
-          className="h-12 w-12 rounded-full bg-background/20 backdrop-blur-sm border border-border hover:bg-primary hover:text-primary-foreground pointer-events-auto transition-all duration-300"
+          className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-background/30 backdrop-blur-sm hover:bg-primary hover:text-primary-foreground pointer-events-auto transition-all duration-300"
         >
-          {isRTL ? <ChevronRight className="h-6 w-6" /> : <ChevronLeft className="h-6 w-6" />}
+          {isRTL ? <ChevronRight className="h-5 w-5 md:h-6 md:w-6" /> : <ChevronLeft className="h-5 w-5 md:h-6 md:w-6" />}
         </Button>
         <Button
           variant="ghost"
           size="icon"
           onClick={scrollNext}
-          className="h-12 w-12 rounded-full bg-background/20 backdrop-blur-sm border border-border hover:bg-primary hover:text-primary-foreground pointer-events-auto transition-all duration-300"
+          className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-background/30 backdrop-blur-sm hover:bg-primary hover:text-primary-foreground pointer-events-auto transition-all duration-300"
         >
-          {isRTL ? <ChevronLeft className="h-6 w-6" /> : <ChevronRight className="h-6 w-6" />}
+          {isRTL ? <ChevronLeft className="h-5 w-5 md:h-6 md:w-6" /> : <ChevronRight className="h-5 w-5 md:h-6 md:w-6" />}
         </Button>
       </div>
 
       {/* Dots */}
-      <div className="absolute bottom-8 left-0 right-0 z-20 flex justify-center gap-2">
+      <div className="absolute bottom-6 left-0 right-0 z-10 flex justify-center gap-2">
         {displaySlides.map((_, index) => (
           <button
             key={index}
@@ -226,8 +102,8 @@ const HeroCarousel: React.FC = () => {
             className={cn(
               "h-2 rounded-full transition-all duration-300",
               selectedIndex === index
-                ? "w-8 bg-primary"
-                : "w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50"
+                ? "w-6 bg-primary"
+                : "w-2 bg-foreground/30 hover:bg-foreground/50"
             )}
             aria-label={`Go to slide ${index + 1}`}
           />

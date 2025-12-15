@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Instagram, Twitter, Facebook, Youtube, MapPin, Phone, Mail, MessageCircle } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
-import { settingsAPI } from '@/lib/api';
+import { settingsAPI, contactAPI } from '@/lib/api';
 import { getImageUrl } from '@/lib/imageUtils';
 
 interface SocialLink {
@@ -13,16 +13,28 @@ interface SocialLink {
   key: string;
 }
 
+interface ContactInfo {
+  address: { en: string; fa: string };
+  phone: { en: string; fa: string };
+  email: { en: string; fa: string };
+}
+
 const Footer: React.FC = () => {
-  const { t, isRTL } = useLanguage();
+  const { t, isRTL, language } = useLanguage();
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [siteName, setSiteName] = useState<{ en: string; fa: string }>({ en: 'MotoShop', fa: 'موتوشاپ' });
   const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
   const [whatsappNumber, setWhatsappNumber] = useState<string>('');
+  const [contactInfo, setContactInfo] = useState<ContactInfo>({
+    address: { en: 'Kabul, Shahr-e-Naw, Main Road, No. 123', fa: 'کابل، شهر نو، سرک اصلی، پلاک ۱۲۳' },
+    phone: { en: '+93-799-123456', fa: '۰۷۹۹-۱۲۳۴۵۶' },
+    email: { en: 'info@motoshop.af', fa: 'info@motoshop.af' },
+  });
 
   useEffect(() => {
-    const fetchSettings = async () => {
+    const fetchData = async () => {
       try {
+        // Fetch site settings (logo, name, social links)
         const settings = await settingsAPI.getAll();
         if (settings.site_logo?.value) {
           setLogoUrl(getImageUrl(settings.site_logo.value));
@@ -34,11 +46,6 @@ const Footer: React.FC = () => {
           });
         }
         
-        // Update WhatsApp number
-        if (settings.whatsapp?.value) {
-          setWhatsappNumber(settings.whatsapp.value.replace(/[^0-9+]/g, ''));
-        }
-        
         // Update social links from settings
         setSocialLinks([
           { icon: Instagram, href: settings.instagram?.value || '', label: 'Instagram', key: 'instagram' },
@@ -46,11 +53,35 @@ const Footer: React.FC = () => {
           { icon: Facebook, href: settings.facebook?.value || '', label: 'Facebook', key: 'facebook' },
           { icon: Youtube, href: settings.youtube?.value || '', label: 'YouTube', key: 'youtube' },
         ]);
+
+        // Fetch contact settings (single source of truth for contact info)
+        const contactSettings = await contactAPI.getSettings();
+        if (contactSettings) {
+          // WhatsApp from contact settings
+          if (contactSettings.whatsapp?.value) {
+            setWhatsappNumber(contactSettings.whatsapp.value.replace(/[^0-9+]/g, ''));
+          }
+          
+          setContactInfo({
+            address: { 
+              en: contactSettings.address?.value || 'Kabul, Shahr-e-Naw, Main Road, No. 123',
+              fa: contactSettings.address?.value_fa || 'کابل، شهر نو، سرک اصلی، پلاک ۱۲۳'
+            },
+            phone: { 
+              en: contactSettings.phone?.value || '+93-799-123456',
+              fa: contactSettings.phone?.value_fa || '۰۷۹۹-۱۲۳۴۵۶'
+            },
+            email: { 
+              en: contactSettings.email?.value || 'info@motoshop.af',
+              fa: contactSettings.email?.value_fa || 'info@motoshop.af'
+            },
+          });
+        }
       } catch (error) {
         console.error('Failed to fetch settings:', error);
       }
     };
-    fetchSettings();
+    fetchData();
   }, []);
 
   const quickLinks = [
@@ -59,6 +90,8 @@ const Footer: React.FC = () => {
     { path: '/about', label: t('nav.about') },
     { path: '/contact', label: t('nav.contact') },
   ];
+  
+  const lang = language === 'fa' ? 'fa' : 'en';
 
   return (
     <footer className="bg-card border-t border-border">
@@ -158,19 +191,19 @@ const Footer: React.FC = () => {
                   "text-muted-foreground text-sm",
                   isRTL ? "font-vazir" : ""
                 )}>
-                  {t('contact.addressText')}
+                  {contactInfo.address[lang]}
                 </span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="h-4 w-4 text-primary flex-shrink-0" />
                 <span className="text-muted-foreground text-sm">
-                  {t('contact.phoneNumber')}
+                  {contactInfo.phone[lang]}
                 </span>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="h-4 w-4 text-primary flex-shrink-0" />
                 <span className="text-muted-foreground text-sm">
-                  {t('contact.emailAddress')}
+                  {contactInfo.email[lang]}
                 </span>
               </li>
             </ul>

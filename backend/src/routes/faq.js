@@ -1,5 +1,5 @@
 const express = require('express');
-const { prepare, saveDb } = require('../database');
+const { prepare, saveDatabase } = require('../database');
 const { authMiddleware } = require('../middleware/auth');
 
 const router = express.Router();
@@ -37,10 +37,9 @@ router.post('/', authMiddleware, (req, res) => {
       INSERT INTO faqs (question, question_fa, answer, answer_fa, sort_order, active)
       VALUES (?, ?, ?, ?, ?, ?)
     `);
-    stmt.run([question, question_fa, answer, answer_fa, sort_order, active ? 1 : 0]);
-    saveDb();
+    const result = stmt.run(question, question_fa, answer, answer_fa, sort_order, active ? 1 : 0);
     
-    res.status(201).json({ message: 'FAQ created successfully' });
+    res.status(201).json({ id: result.lastInsertRowid, message: 'FAQ created successfully' });
   } catch (error) {
     console.error('Error creating FAQ:', error);
     res.status(500).json({ error: 'Failed to create FAQ' });
@@ -58,8 +57,7 @@ router.put('/:id', authMiddleware, (req, res) => {
       SET question = ?, question_fa = ?, answer = ?, answer_fa = ?, sort_order = ?, active = ?
       WHERE id = ?
     `);
-    stmt.run([question, question_fa, answer, answer_fa, sort_order, active ? 1 : 0, id]);
-    saveDb();
+    stmt.run(question, question_fa, answer, answer_fa, sort_order, active ? 1 : 0, id);
     
     res.json({ message: 'FAQ updated successfully' });
   } catch (error) {
@@ -74,8 +72,11 @@ router.delete('/:id', authMiddleware, (req, res) => {
     const { id } = req.params;
     
     const stmt = prepare('DELETE FROM faqs WHERE id = ?');
-    stmt.run([id]);
-    saveDb();
+    const result = stmt.run(id);
+    
+    if (result.changes === 0) {
+      return res.status(404).json({ error: 'FAQ not found' });
+    }
     
     res.json({ message: 'FAQ deleted successfully' });
   } catch (error) {

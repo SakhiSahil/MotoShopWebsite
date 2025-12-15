@@ -7,7 +7,7 @@ import { getAuthToken } from "@/lib/api";
 import { getImageUrl } from "@/lib/imageUtils";
 import { cn } from "@/lib/utils";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 interface ImageUploadProps {
   label: string;

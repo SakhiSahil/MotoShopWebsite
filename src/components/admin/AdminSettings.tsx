@@ -6,10 +6,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { settingsAPI, authAPI, faqAPI } from "@/lib/api";
-import { Loader2, Save, Settings, BarChart3, Lock, HelpCircle, Plus, Pencil, Trash2, GripVertical, Image } from "lucide-react";
+import { Loader2, Save, Settings, BarChart3, Lock, HelpCircle, Plus, Pencil, Trash2, Image, Video, Users, Bike, Award, Clock, Wrench, MapPin, Star, Shield, GripVertical } from "lucide-react";
 import { ImageUpload } from "./ImageUpload";
+import { VideoUpload } from "./VideoUpload";
 import {
   Dialog,
   DialogContent,
@@ -43,9 +45,17 @@ interface FAQ {
   active: boolean;
 }
 
+interface Stat {
+  id: number;
+  label: string;
+  label_fa: string;
+  value: string;
+  icon: string;
+  sort_order: number;
+}
+
 const siteSettingsFields = [
   { key: 'site_name', label: 'نام سایت', type: 'input' },
-  { key: 'whatsapp', label: 'شماره واتساپ', type: 'input', placeholder: '+93700000000' },
   { key: 'instagram', label: 'لینک اینستاگرام', type: 'input', placeholder: 'https://instagram.com/yourpage' },
   { key: 'facebook', label: 'لینک فیسبوک', type: 'input', placeholder: 'https://facebook.com/yourpage' },
   { key: 'twitter', label: 'لینک توییتر/X', type: 'input', placeholder: 'https://twitter.com/yourpage' },
@@ -53,11 +63,15 @@ const siteSettingsFields = [
   { key: 'footer_text', label: 'متن فوتر', type: 'textarea' },
 ];
 
-const statsFields = [
-  { key: 'stat_years', label: 'سال تجربه', icon: '📅' },
-  { key: 'stat_customers', label: 'مشتری راضی', icon: '👥' },
-  { key: 'stat_models', label: 'مدل موتورسیکلت', icon: '🏍️' },
-  { key: 'stat_centers', label: 'مرکز خدمات', icon: '🏢' },
+const iconOptions = [
+  { value: 'users', label: 'کاربران', icon: Users },
+  { value: 'bike', label: 'موتورسیکلت', icon: Bike },
+  { value: 'award', label: 'جایزه', icon: Award },
+  { value: 'clock', label: 'زمان', icon: Clock },
+  { value: 'wrench', label: 'ابزار', icon: Wrench },
+  { value: 'mappin', label: 'مکان', icon: MapPin },
+  { value: 'star', label: 'ستاره', icon: Star },
+  { value: 'shield', label: 'سپر', icon: Shield },
 ];
 
 const AdminSettings = () => {
@@ -71,6 +85,20 @@ const AdminSettings = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [changingPassword, setChangingPassword] = useState(false);
+
+  // Stats state
+  const [stats, setStats] = useState<Stat[]>([]);
+  const [statsLoading, setStatsLoading] = useState(false);
+  const [statsSaving, setStatsSaving] = useState(false);
+  const [statDialogOpen, setStatDialogOpen] = useState(false);
+  const [editingStat, setEditingStat] = useState<Stat | null>(null);
+  const [statFormData, setStatFormData] = useState({
+    label: "",
+    label_fa: "",
+    value: "",
+    icon: "users",
+    sort_order: 0,
+  });
 
   // FAQ state
   const [faqs, setFaqs] = useState<FAQ[]>([]);
@@ -100,6 +128,18 @@ const AdminSettings = () => {
     }
   };
 
+  const fetchStats = async () => {
+    setStatsLoading(true);
+    try {
+      const data = await settingsAPI.getStats();
+      setStats(data);
+    } catch (error) {
+      toast({ title: "خطا در دریافت آمار", variant: "destructive" });
+    } finally {
+      setStatsLoading(false);
+    }
+  };
+
   const fetchFaqs = async () => {
     setFaqLoading(true);
     try {
@@ -114,6 +154,7 @@ const AdminSettings = () => {
 
   useEffect(() => {
     fetchSettings();
+    fetchStats();
     fetchFaqs();
   }, []);
 
@@ -181,6 +222,66 @@ const AdminSettings = () => {
       });
     } finally {
       setChangingPassword(false);
+    }
+  };
+
+  // Stats handlers
+  const resetStatForm = () => {
+    setStatFormData({
+      label: "",
+      label_fa: "",
+      value: "",
+      icon: "users",
+      sort_order: stats.length,
+    });
+    setEditingStat(null);
+  };
+
+  const handleOpenStatDialog = (stat?: Stat) => {
+    if (stat) {
+      setEditingStat(stat);
+      setStatFormData({
+        label: stat.label,
+        label_fa: stat.label_fa,
+        value: stat.value,
+        icon: stat.icon,
+        sort_order: stat.sort_order,
+      });
+    } else {
+      resetStatForm();
+    }
+    setStatDialogOpen(true);
+  };
+
+  const handleStatSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatsSaving(true);
+
+    try {
+      if (editingStat) {
+        await settingsAPI.updateStat(editingStat.id, statFormData);
+        toast({ title: "آمار با موفقیت ویرایش شد" });
+      } else {
+        await settingsAPI.createStat(statFormData);
+        toast({ title: "آمار با موفقیت اضافه شد" });
+      }
+      setStatDialogOpen(false);
+      resetStatForm();
+      fetchStats();
+    } catch (error) {
+      toast({ title: "خطا در ذخیره آمار", variant: "destructive" });
+    } finally {
+      setStatsSaving(false);
+    }
+  };
+
+  const handleDeleteStat = async (id: number) => {
+    try {
+      await settingsAPI.deleteStat(id);
+      toast({ title: "آمار با موفقیت حذف شد" });
+      fetchStats();
+    } catch (error) {
+      toast({ title: "خطا در حذف آمار", variant: "destructive" });
     }
   };
 
@@ -284,6 +385,10 @@ const AdminSettings = () => {
               <BarChart3 className="w-4 h-4" />
               آمار
             </TabsTrigger>
+            <TabsTrigger value="videos" className="flex items-center gap-2">
+              <Video className="w-4 h-4" />
+              ویدیوها
+            </TabsTrigger>
             <TabsTrigger value="faq" className="flex items-center gap-2">
               <HelpCircle className="w-4 h-4" />
               سوالات متداول
@@ -362,40 +467,263 @@ const AdminSettings = () => {
           </TabsContent>
 
           <TabsContent value="stats">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-2 gap-6">
-                {statsFields.map((field) => (
-                  <div key={field.key} className="space-y-2 p-4 border rounded-lg">
-                    <Label className="flex items-center gap-2 text-lg">
-                      <span>{field.icon}</span>
-                      {field.label}
-                    </Label>
-                    <div className="grid grid-cols-2 gap-2">
-                      <div>
-                        <Label className="text-xs text-muted-foreground">انگلیسی</Label>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-medium">مدیریت آمار</h3>
+                <Dialog open={statDialogOpen} onOpenChange={setStatDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button onClick={() => handleOpenStatDialog()}>
+                      <Plus className="w-4 h-4 ml-2" />
+                      افزودن آمار
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-lg">
+                    <DialogHeader>
+                      <DialogTitle>
+                        {editingStat ? "ویرایش آمار" : "افزودن آمار جدید"}
+                      </DialogTitle>
+                    </DialogHeader>
+                    <form onSubmit={handleStatSubmit} className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label>عنوان (انگلیسی)</Label>
+                          <Input
+                            value={statFormData.label}
+                            onChange={(e) => setStatFormData({ ...statFormData, label: e.target.value })}
+                            required
+                            placeholder="Years Experience"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>عنوان (فارسی)</Label>
+                          <Input
+                            value={statFormData.label_fa}
+                            onChange={(e) => setStatFormData({ ...statFormData, label_fa: e.target.value })}
+                            required
+                            dir="rtl"
+                            placeholder="سال تجربه"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label>مقدار</Label>
+                          <Input
+                            value={statFormData.value}
+                            onChange={(e) => setStatFormData({ ...statFormData, value: e.target.value })}
+                            required
+                            placeholder="10+"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>آیکون</Label>
+                          <Select
+                            value={statFormData.icon}
+                            onValueChange={(value) => setStatFormData({ ...statFormData, icon: value })}
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {iconOptions.map((opt) => {
+                                const IconComp = opt.icon;
+                                return (
+                                  <SelectItem key={opt.value} value={opt.value}>
+                                    <div className="flex items-center gap-2">
+                                      <IconComp className="w-4 h-4" />
+                                      {opt.label}
+                                    </div>
+                                  </SelectItem>
+                                );
+                              })}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label>ترتیب نمایش</Label>
                         <Input
-                          value={settings[field.key]?.value || ''}
-                          onChange={(e) => updateSetting(field.key, 'value', e.target.value)}
-                          placeholder="10+"
+                          type="number"
+                          value={statFormData.sort_order}
+                          onChange={(e) => setStatFormData({ ...statFormData, sort_order: parseInt(e.target.value) || 0 })}
                         />
                       </div>
-                      <div>
-                        <Label className="text-xs text-muted-foreground">فارسی</Label>
+
+                      <div className="flex justify-end gap-2">
+                        <Button type="button" variant="outline" onClick={() => setStatDialogOpen(false)}>
+                          انصراف
+                        </Button>
+                        <Button type="submit" disabled={statsSaving}>
+                          {statsSaving ? <Loader2 className="w-4 h-4 animate-spin ml-2" /> : <Save className="w-4 h-4 ml-2" />}
+                          ذخیره
+                        </Button>
+                      </div>
+                    </form>
+                  </DialogContent>
+                </Dialog>
+              </div>
+
+              {statsLoading ? (
+                <div className="flex justify-center py-8">
+                  <Loader2 className="w-6 h-6 animate-spin" />
+                </div>
+              ) : stats.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  هیچ آماری ثبت نشده است
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {stats.map((stat) => {
+                    const iconOpt = iconOptions.find(i => i.value === stat.icon);
+                    const IconComp = iconOpt?.icon || Users;
+                    return (
+                      <div key={stat.id} className="p-4 border rounded-lg flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 bg-primary/10 rounded-lg">
+                            <IconComp className="w-5 h-5 text-primary" />
+                          </div>
+                          <div>
+                            <p className="font-bold text-xl">{stat.value}</p>
+                            <p className="text-sm text-muted-foreground">{stat.label_fa}</p>
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleOpenStatDialog(stat)}
+                          >
+                            <Pencil className="w-4 h-4" />
+                          </Button>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="ghost" size="icon">
+                                <Trash2 className="w-4 h-4 text-destructive" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>حذف آمار</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  آیا از حذف این آمار اطمینان دارید؟
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>انصراف</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => handleDeleteStat(stat.id)}>
+                                  حذف
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="videos">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-6">
+                <div className="p-4 border rounded-lg bg-muted/30">
+                  <h3 className="font-medium mb-4">ویدیو ۱</h3>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <VideoUpload
+                      label="فایل ویدیو"
+                      value={settings.video_1?.value || ''}
+                      onChange={(url) => updateSetting('video_1', 'value', url)}
+                    />
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label>عنوان (انگلیسی)</Label>
                         <Input
-                          value={settings[field.key]?.value_fa || ''}
-                          onChange={(e) => updateSetting(field.key, 'value_fa', e.target.value)}
+                          value={settings.video_1_title?.value || ''}
+                          onChange={(e) => updateSetting('video_1_title', 'value', e.target.value)}
+                          placeholder="Video 1"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>عنوان (فارسی)</Label>
+                        <Input
+                          value={settings.video_1_title?.value_fa || ''}
+                          onChange={(e) => updateSetting('video_1_title', 'value_fa', e.target.value)}
+                          placeholder="ویدیو ۱"
                           dir="rtl"
-                          placeholder="+۱۰"
                         />
                       </div>
                     </div>
                   </div>
-                ))}
+                </div>
+
+                <div className="p-4 border rounded-lg bg-muted/30">
+                  <h3 className="font-medium mb-4">ویدیو ۲</h3>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <VideoUpload
+                      label="فایل ویدیو"
+                      value={settings.video_2?.value || ''}
+                      onChange={(url) => updateSetting('video_2', 'value', url)}
+                    />
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label>عنوان (انگلیسی)</Label>
+                        <Input
+                          value={settings.video_2_title?.value || ''}
+                          onChange={(e) => updateSetting('video_2_title', 'value', e.target.value)}
+                          placeholder="Video 2"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>عنوان (فارسی)</Label>
+                        <Input
+                          value={settings.video_2_title?.value_fa || ''}
+                          onChange={(e) => updateSetting('video_2_title', 'value_fa', e.target.value)}
+                          placeholder="ویدیو ۲"
+                          dir="rtl"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-4 border rounded-lg bg-muted/30">
+                  <h3 className="font-medium mb-4">ویدیو ۳</h3>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <VideoUpload
+                      label="فایل ویدیو"
+                      value={settings.video_3?.value || ''}
+                      onChange={(url) => updateSetting('video_3', 'value', url)}
+                    />
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label>عنوان (انگلیسی)</Label>
+                        <Input
+                          value={settings.video_3_title?.value || ''}
+                          onChange={(e) => updateSetting('video_3_title', 'value', e.target.value)}
+                          placeholder="Video 3"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>عنوان (فارسی)</Label>
+                        <Input
+                          value={settings.video_3_title?.value_fa || ''}
+                          onChange={(e) => updateSetting('video_3_title', 'value_fa', e.target.value)}
+                          placeholder="ویدیو ۳"
+                          dir="rtl"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <Button type="submit" disabled={saving}>
                 {saving ? <Loader2 className="w-4 h-4 animate-spin ml-2" /> : <Save className="w-4 h-4 ml-2" />}
-                ذخیره آمار
+                ذخیره ویدیوها
               </Button>
             </form>
           </TabsContent>

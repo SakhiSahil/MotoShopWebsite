@@ -81,8 +81,9 @@ const AdminCategories = () => {
     try {
       await categoriesAPI.delete(id);
       toast({ title: "دسته‌بندی با موفقیت حذف شد" });
-      fetchCategories();
+      await fetchCategories();
     } catch (error) {
+      console.error('Delete error:', error);
       toast({ title: "خطا در حذف دسته‌بندی", variant: "destructive" });
     }
   };
