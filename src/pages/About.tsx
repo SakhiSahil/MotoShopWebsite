@@ -7,7 +7,7 @@ import Footer from '@/components/Footer';
 import { cn } from '@/lib/utils';
 import { getImageUrl } from '@/lib/imageUtils';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 interface AboutContent {
   id: string;
@@ -123,12 +123,12 @@ const About: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>{isRTL ? 'درباره ما | موتوشاپ' : 'About Us | MotoShop'}</title>
+        <title>{isRTL ? 'درباره ما | فولاد سکلیت' : 'About Us | Polad Cyclet'}</title>
         <meta 
           name="description" 
           content={isRTL 
-            ? 'درباره موتوشاپ - بزرگترین فروشگاه موتورسیکلت در افغانستان با بیش از ۲۰ سال تجربه.'
-            : 'About MotoShop - The largest motorcycle store in Afghanistan with over 20 years of experience.'
+            ? 'درباره فولاد سکلیت - بزرگترین فروشگاه موتورسیکلت در افغانستان با بیش از ۲۰ سال تجربه.'
+            : 'About Polad Cyclet - The largest motorcycle store in Afghanistan with over 20 years of experience.'
           } 
         />
       </Helmet>
@@ -146,7 +146,7 @@ const About: React.FC = () => {
               <div className="max-w-3xl mx-auto text-center">
                 <h1 className={cn(
                   "section-title text-foreground mb-6",
-                  isRTL ? "font-vazir" : "font-orbitron"
+                  isRTL ? "font-vazir" : "font-poppins"
                 )}>
                   {t('about.title')}
                 </h1>
@@ -167,7 +167,7 @@ const About: React.FC = () => {
                 <div className="animate-fade-in">
                   <h2 className={cn(
                     "text-2xl md:text-3xl font-bold text-foreground mb-6",
-                    isRTL ? "font-vazir" : "font-orbitron"
+                    isRTL ? "font-vazir" : "font-poppins"
                   )}>
                     {isRTL ? aboutContent?.title_fa : aboutContent?.title}
                   </h2>
@@ -204,7 +204,7 @@ const About: React.FC = () => {
                 <Target className="h-12 w-12 text-primary mx-auto mb-6" />
                 <h2 className={cn(
                   "text-2xl md:text-3xl font-bold text-foreground mb-6",
-                  isRTL ? "font-vazir" : "font-orbitron"
+                  isRTL ? "font-vazir" : "font-poppins"
                 )}>
                   {t('about.mission')}
                 </h2>
@@ -224,7 +224,7 @@ const About: React.FC = () => {
               <div className="container mx-auto px-4">
                 <h2 className={cn(
                   "text-2xl md:text-3xl font-bold text-foreground text-center mb-12",
-                  isRTL ? "font-vazir" : "font-orbitron"
+                  isRTL ? "font-vazir" : "font-poppins"
                 )}>
                   {t('about.values')}
                 </h2>
@@ -242,7 +242,7 @@ const About: React.FC = () => {
                         </div>
                         <h3 className={cn(
                           "text-xl font-bold text-foreground mb-3",
-                          isRTL ? "font-vazir" : "font-orbitron"
+                          isRTL ? "font-vazir" : "font-poppins"
                         )}>
                           {isRTL ? value.title_fa : value.title}
                         </h3>
@@ -268,7 +268,7 @@ const About: React.FC = () => {
                   <Users className="h-12 w-12 text-primary mx-auto mb-4" />
                   <h2 className={cn(
                     "text-2xl md:text-3xl font-bold text-foreground",
-                    isRTL ? "font-vazir" : "font-orbitron"
+                    isRTL ? "font-vazir" : "font-poppins"
                   )}>
                     {isRTL ? 'تیم ما' : 'Our Team'}
                   </h2>
@@ -289,13 +289,13 @@ const About: React.FC = () => {
                       </div>
                       <h3 className={cn(
                         "text-lg font-bold text-foreground",
-                        isRTL ? "font-vazir" : "font-orbitron"
+                        isRTL ? "font-vazir" : "font-poppins"
                       )}>
                         {isRTL ? member.name_fa : member.name}
                       </h3>
                       <p className={cn(
                         "text-primary text-sm",
-                        isRTL ? "font-vazir" : "font-orbitron"
+                        isRTL ? "font-vazir" : "font-poppins"
                       )}>
                         {isRTL ? member.role_fa : member.role}
                       </p>

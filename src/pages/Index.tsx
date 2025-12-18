@@ -17,7 +17,7 @@ const Index: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>{isRTL ? 'موتوشاپ | فروشگاه موتورسیکلت' : 'MotoShop | Motorcycle Store'}</title>
+        <title>{isRTL ? 'فولاد سکلیت | فروشگاه موتورسیکلت' : 'Polad Cyclet | Motorcycle Store'}</title>
         <meta 
           name="description" 
           content={isRTL 
@@ -26,12 +26,12 @@ const Index: React.FC = () => {
           } 
         />
         <meta name="keywords" content="motorcycle, motorbike, Kawasaki, Ducati, BMW, Honda, Yamaha, موتورسیکلت, موتور, افغانستان, کابل" />
-        <link rel="canonical" href="https://motoshop.af" />
+        <link rel="canonical" href="https://polad.af" />
       </Helmet>
 
       <div className="min-h-screen bg-background">
         <Header />
-        <main className="pt-16 md:pt-20">
+        <main className="pt-16 md:pt-16">
           <HeroCarousel />
           <AboutSection />
           <StatsSection />

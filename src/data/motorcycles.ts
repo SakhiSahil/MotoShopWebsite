@@ -6,7 +6,8 @@ export interface Motorcycle {
   brandFa: string;
   price: number | string;
   priceFa: string;
-  year: number;
+  year: number | string;
+  yearFa?: string;
   engine: string;
   engineFa?: string;
   power: string;

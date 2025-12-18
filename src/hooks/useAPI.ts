@@ -44,6 +44,8 @@ const transformProduct = (p: any): Motorcycle => ({
   categoryFa: p.category_fa,
   price: typeof p.price === 'string' ? parseFloat(p.price.replace(/[^0-9.]/g, '')) || 0 : p.price,
   priceFa: p.price_fa,
+  year: p.year || new Date().getFullYear(),
+  yearFa: p.year_fa || '',
   engine: p.engine,
   engineFa: p.engine_fa,
   power: p.power,
@@ -60,7 +62,6 @@ const transformProduct = (p: any): Motorcycle => ({
   gallery: p.gallery || [],
   featured: Boolean(p.featured),
   inStock: Boolean(p.inStock || p.in_stock),
-  year: p.year || new Date().getFullYear(),
 });
 
 const transformSlide = (s: any): Slide => ({

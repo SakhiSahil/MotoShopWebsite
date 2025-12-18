@@ -66,7 +66,7 @@ const FAQSection: React.FC = () => {
           className={cn(
             "text-center text-2xl md:text-3xl font-bold text-foreground mb-10",
             getAnimationClasses(isVisible, scrollDirection),
-            isRTL ? "font-vazir" : "font-orbitron"
+            isRTL ? "font-vazir" : "font-poppins"
           )}
         >
           {isRTL ? 'سوالات متداول' : 'Frequently Asked Questions'}
@@ -88,7 +88,7 @@ const FAQSection: React.FC = () => {
                   <AccordionTrigger 
                     className={cn(
                       "text-foreground hover:text-primary hover:no-underline py-4 text-sm",
-                      isRTL ? "font-vazir text-right" : "font-orbitron"
+                      isRTL ? "font-vazir text-right" : "font-poppins"
                     )}
                   >
                     {isRTL ? faq.question_fa : faq.question}

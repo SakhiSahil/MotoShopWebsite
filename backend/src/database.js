@@ -4,7 +4,7 @@ const path = require('path');
 
 // Determine database path based on environment
 const isProduction = process.env.NODE_ENV === 'production';
-const dbPath = process.env.DB_PATH || (isProduction ? '/data/motoshop.db' : path.join(__dirname, '../data/motoshop.db'));
+const dbPath = process.env.DB_PATH || (isProduction ? '/data/poladcyclet.db' : path.join(__dirname, '../data/poladcyclet.db'));
 const dataDir = path.dirname(dbPath);
 
 let db = null;

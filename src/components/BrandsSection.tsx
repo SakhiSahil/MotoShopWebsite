@@ -33,7 +33,7 @@ const BrandsSection: React.FC = () => {
           className={cn(
             "text-center text-2xl md:text-3xl font-bold text-foreground mb-10",
             getAnimationClasses(isVisible, scrollDirection),
-            isRTL ? "font-vazir" : "font-orbitron"
+            isRTL ? "font-vazir" : "font-poppins"
           )}
         >
           {isRTL ? 'برندهای معتبر' : 'Trusted Brands'}
@@ -58,7 +58,7 @@ const BrandsSection: React.FC = () => {
               </div>
               <p className={cn(
                 "mt-2 text-xs md:text-sm text-muted-foreground group-hover:text-primary transition-colors duration-300",
-                isRTL ? "font-vazir" : "font-orbitron"
+                isRTL ? "font-vazir" : "font-poppins"
               )}>
                 {language === 'fa' ? brand.nameFa : brand.name}
               </p>

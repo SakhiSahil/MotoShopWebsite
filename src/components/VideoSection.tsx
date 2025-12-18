@@ -122,17 +122,12 @@ const VideoSection: React.FC = () => {
             <Play className="w-3 h-3 text-primary" />
             <span className={cn(
               "text-xs text-primary font-medium",
-              isRTL ? "font-vazir" : "font-orbitron"
+              isRTL ? "font-vazir" : "font-poppins"
             )}>
               {isRTL ? 'ویدیوها' : 'Videos'}
             </span>
           </div>
-          <h2 className={cn(
-            "text-2xl md:text-3xl font-bold text-foreground mb-2",
-            isRTL ? "font-vazir" : "font-orbitron"
-          )}>
-            {isRTL ? 'ویدیوهای معرفی' : 'Introduction Videos'}
-          </h2>
+
           <p className={cn(
             "text-muted-foreground text-sm max-w-md mx-auto",
             isRTL ? "font-vazir" : ""
@@ -151,16 +146,21 @@ const VideoSection: React.FC = () => {
           <Tabs value={activeTab} onValueChange={handleTabChange} dir={isRTL ? 'rtl' : 'ltr'}>
             {videos.length > 1 && (
               <TabsList className={cn(
-                "mb-6 bg-background/50 backdrop-blur-sm border border-border/50 p-1 rounded-2xl",
-                videos.length === 2 ? "grid grid-cols-2" : "grid grid-cols-3"
+                "mb-6 bg-transparent border-none p-0 gap-6 h-auto",
+                videos.length === 2 ? "flex justify-center" : "flex justify-center"
               )}>
                 {videos.map((video, index) => (
                   <TabsTrigger 
                     key={index} 
                     value={index.toString()}
                     className={cn(
-                      "text-xs md:text-sm rounded-xl py-3 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg transition-all duration-300",
-                      isRTL ? "font-vazir" : "font-orbitron"
+                      "relative text-sm md:text-base py-2 px-1 bg-transparent border-none rounded-none shadow-none",
+                      "text-muted-foreground hover:text-primary transition-colors duration-300",
+                      "data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none",
+                      "after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5",
+                      "after:bg-primary after:scale-x-0 after:origin-center after:transition-transform after:duration-300",
+                      "data-[state=active]:after:scale-x-100",
+                      isRTL ? "font-vazir" : "font-poppins"
                     )}
                   >
                     {isRTL ? video.titleFa : video.title}

@@ -22,13 +22,13 @@ interface ContactInfo {
 const Footer: React.FC = () => {
   const { t, isRTL, language } = useLanguage();
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
-  const [siteName, setSiteName] = useState<{ en: string; fa: string }>({ en: 'MotoShop', fa: 'موتوشاپ' });
+  const [siteName, setSiteName] = useState<{ en: string; fa: string }>({ en: 'Polad Cyclet', fa: 'فولاد سکلیت' });
   const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
   const [whatsappNumber, setWhatsappNumber] = useState<string>('');
   const [contactInfo, setContactInfo] = useState<ContactInfo>({
     address: { en: 'Kabul, Shahr-e-Naw, Main Road, No. 123', fa: 'کابل، شهر نو، سرک اصلی، پلاک ۱۲۳' },
     phone: { en: '+93-799-123456', fa: '۰۷۹۹-۱۲۳۴۵۶' },
-    email: { en: 'info@motoshop.af', fa: 'info@motoshop.af' },
+    email: { en: 'info@polad.af', fa: 'info@polad.af' },
   });
 
   useEffect(() => {
@@ -41,8 +41,8 @@ const Footer: React.FC = () => {
         }
         if (settings.site_name?.value || settings.site_name?.value_fa) {
           setSiteName({
-            en: settings.site_name?.value || 'MotoShop',
-            fa: settings.site_name?.value_fa || 'موتوشاپ'
+            en: settings.site_name?.value,
+            fa: settings.site_name?.value_fa
           });
         }
         
@@ -72,8 +72,8 @@ const Footer: React.FC = () => {
               fa: contactSettings.phone?.value_fa || '۰۷۹۹-۱۲۳۴۵۶'
             },
             email: { 
-              en: contactSettings.email?.value || 'info@motoshop.af',
-              fa: contactSettings.email?.value_fa || 'info@motoshop.af'
+              en: contactSettings.email?.value || 'info@polad.af',
+              fa: contactSettings.email?.value_fa || 'info@polad.af'
             },
           });
         }
@@ -113,7 +113,7 @@ const Footer: React.FC = () => {
               )}
               <span className={cn(
                 "font-bold text-xl text-foreground",
-                isRTL ? "font-vazir" : "font-orbitron"
+                isRTL ? "font-vazir" : "font-poppins"
               )}>
                 {isRTL ? siteName.fa : siteName.en}
               </span>
@@ -155,7 +155,7 @@ const Footer: React.FC = () => {
           <div>
             <h4 className={cn(
               "font-semibold text-foreground mb-4",
-              isRTL ? "font-vazir" : "font-orbitron"
+              isRTL ? "font-vazir" : "font-poppins"
             )}>
               {t('footer.quickLinks')}
             </h4>
@@ -180,7 +180,7 @@ const Footer: React.FC = () => {
           <div>
             <h4 className={cn(
               "font-semibold text-foreground mb-4",
-              isRTL ? "font-vazir" : "font-orbitron"
+              isRTL ? "font-vazir" : "font-poppins"
             )}>
               {t('nav.contact')}
             </h4>
@@ -213,7 +213,7 @@ const Footer: React.FC = () => {
           <div>
             <h4 className={cn(
               "font-semibold text-foreground mb-4",
-              isRTL ? "font-vazir" : "font-orbitron"
+              isRTL ? "font-vazir" : "font-poppins"
             )}>
               {t('footer.social')}
             </h4>

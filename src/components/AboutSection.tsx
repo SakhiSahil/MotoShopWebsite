@@ -103,7 +103,7 @@ const AboutSection: React.FC = () => {
               <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
               <span className={cn(
                 "text-xs text-primary font-medium",
-                isRTL ? "font-vazir" : "font-orbitron"
+                isRTL ? "font-vazir" : "font-poppins"
               )}>
                 {isRTL ? 'درباره ما' : 'About Us'}
               </span>
@@ -111,7 +111,7 @@ const AboutSection: React.FC = () => {
 
             <h2 className={cn(
               "text-3xl md:text-4xl font-bold text-foreground mb-6 leading-tight",
-              isRTL ? "font-vazir" : "font-orbitron"
+              isRTL ? "font-vazir" : "font-poppins"
             )}>
               {title}
             </h2>
@@ -127,7 +127,7 @@ const AboutSection: React.FC = () => {
               asChild
               className={cn(
                 "racing-gradient text-primary-foreground hover:opacity-90 gap-2",
-                isRTL ? "font-vazir" : "font-orbitron"
+                isRTL ? "font-vazir" : "font-poppins"
               )}
             >
               <Link to="/about">

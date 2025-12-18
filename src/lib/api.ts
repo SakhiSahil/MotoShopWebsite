@@ -7,7 +7,7 @@
 // Recommended env format:
 //   VITE_API_URL=https://your-backend-domain.com/api
 // (Do NOT use localhost when testing inside Lovable preview.)
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 // Auth token management
 let authToken: string | null = localStorage.getItem('admin_token');

@@ -24,6 +24,8 @@ interface Product {
   category_fa: string;
   price: string;
   price_fa: string;
+  year: string;
+  year_fa: string;
   engine: string;
   engine_fa: string;
   power: string;
@@ -45,6 +47,7 @@ interface Product {
 const emptyProduct: Omit<Product, 'id'> = {
   name: "", name_fa: "", brand: "", brand_fa: "",
   category: "", category_fa: "", price: "", price_fa: "",
+  year: "", year_fa: "",
   engine: "", engine_fa: "", power: "", power_fa: "",
   top_speed: "", top_speed_fa: "", weight: "", weight_fa: "",
   fuel_capacity: "", fuel_capacity_fa: "", description: "", description_fa: "",
@@ -157,6 +160,8 @@ const AdminProducts = () => {
       category_fa: product.category_fa,
       price: product.price,
       price_fa: product.price_fa,
+      year: product.year || '',
+      year_fa: product.year_fa || '',
       engine: product.engine,
       engine_fa: product.engine_fa,
       power: product.power,
@@ -293,6 +298,23 @@ const AdminProducts = () => {
                     value={formData.price_fa}
                     onChange={(e) => setFormData({ ...formData, price_fa: e.target.value })}
                     required
+                    dir="rtl"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>سال تولید (انگلیسی)</Label>
+                  <Input
+                    value={formData.year}
+                    onChange={(e) => setFormData({ ...formData, year: e.target.value })}
+                    placeholder="2024"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>سال تولید (فارسی)</Label>
+                  <Input
+                    value={formData.year_fa}
+                    onChange={(e) => setFormData({ ...formData, year_fa: e.target.value })}
+                    placeholder="۲۰۲۴"
                     dir="rtl"
                   />
                 </div>

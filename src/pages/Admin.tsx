@@ -178,7 +178,7 @@ const Admin = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>پنل مدیریت - موتو شاپ</title>
+        <title>پنل مدیریت - فولاد سکلیت</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 

@@ -46,14 +46,14 @@ const HeroCarousel: React.FC = () => {
 
   if (slidesLoading && productsLoading) {
     return (
-      <section className="h-[70vh] flex items-center justify-center bg-background">
+      <section className="h-[25vh] md:h-[90vh] flex items-center justify-center bg-background">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </section>
     );
   }
 
   return (
-    <section className="relative h-[70vh] w-full overflow-hidden">
+    <section className="relative h-[25vh] md:h-[90vh] w-full overflow-hidden bg-muted">
       {/* Carousel */}
       <div ref={emblaRef} className="h-full w-full overflow-hidden">
         <div className="flex h-full">
@@ -66,7 +66,6 @@ const HeroCarousel: React.FC = () => {
                 src={getImageUrl(slide.image)}
                 alt={language === 'fa' ? slide.titleFa : slide.title}
                 className="w-full h-full object-cover"
-                style={{ objectPosition: 'center center' }}
               />
             </div>
           ))}

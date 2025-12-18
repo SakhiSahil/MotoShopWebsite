@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Sun, Moon, Languages } from 'lucide-react';
+import { Menu, Sun, Moon, Languages } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
 import { settingsAPI } from '@/lib/api';
 import { getImageUrl } from '@/lib/imageUtils';
@@ -11,7 +12,7 @@ import { getImageUrl } from '@/lib/imageUtils';
 const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
-  const [siteName, setSiteName] = useState<{ en: string; fa: string }>({ en: 'MotoShop', fa: 'موتوشاپ' });
+  const [siteName, setSiteName] = useState<{ en: string; fa: string }>({ en: 'Polad Cyclet', fa: 'فولاد سکلیت' });
   const { language, setLanguage, t, isRTL } = useLanguage();
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
@@ -25,8 +26,8 @@ const Header: React.FC = () => {
         }
         if (settings.site_name?.value || settings.site_name?.value_fa) {
           setSiteName({
-            en: settings.site_name?.value || 'MotoShop',
-            fa: settings.site_name?.value_fa || 'موتوشاپ'
+            en: settings.site_name?.value,
+            fa: settings.site_name?.value_fa
           });
         }
       } catch (error) {
@@ -48,28 +49,27 @@ const Header: React.FC = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16 md:h-20">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
-            {logoUrl ? (
-              <img 
-                src={getImageUrl(logoUrl)} 
-                alt="Logo" 
-                className="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover"
-              />
-            ) : (
-              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full racing-gradient flex items-center justify-center glow-effect">
-                <span className="text-primary-foreground font-bold text-lg md:text-xl">M</span>
-              </div>
-            )}
-            <span className={cn(
-              "font-bold text-lg md:text-xl text-foreground",
-              isRTL ? "font-vazir" : "font-orbitron"
-            )}>
-              {isRTL ? siteName.fa : siteName.en}
-            </span>
-          </Link>
+  <div className="container mx-auto px-4">
+    <div className="flex items-center justify-between h-[10vh]">
+      {/* Logo */}
+      <Link to="/" className="flex items-center gap-2">
+        {logoUrl && (
+          <img
+            src={getImageUrl(logoUrl)}
+            alt="Logo"
+            className="w-10 h-10 md:w-10 md:h-10 rounded-full object-cover"
+          />
+        )}
+        <span
+          className={cn(
+            "font-bold text-lg md:text-xl text-foreground",
+            isRTL ? "font-vazir" : "font-poppins"
+          )}
+        >
+          {isRTL ? siteName.fa : siteName.en}
+        </span>
+      </Link>
+
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
@@ -79,7 +79,7 @@ const Header: React.FC = () => {
                 to={item.path}
                 className={cn(
                   "relative py-2 text-sm font-medium transition-colors duration-300",
-                  isRTL ? "font-vazir" : "font-orbitron",
+                  isRTL ? "font-vazir" : "font-poppins",
                   isActive(item.path)
                     ? "text-primary"
                     : "text-muted-foreground hover:text-foreground"
@@ -120,38 +120,48 @@ const Header: React.FC = () => {
             </Button>
 
             {/* Mobile Menu Toggle */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden h-9 w-9 rounded-full"
-              onClick={() => setIsOpen(!isOpen)}
-            >
-              {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </Button>
+            <Sheet open={isOpen} onOpenChange={setIsOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="md:hidden h-9 w-9 rounded-full"
+                >
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent
+                side={isRTL ? 'right' : 'left'}
+                className="w-72 bg-background/95 backdrop-blur-lg border-border"
+              >
+                <nav className="flex flex-col gap-2 mt-8">
+                  {navItems.map((item) => (
+                    <Link
+                      key={item.path}
+                      to={item.path}
+                      onClick={() => setIsOpen(false)}
+                      className={cn(
+                        "relative py-3 px-4 text-base font-medium transition-colors duration-300 rounded-lg",
+                        isRTL ? "font-vazir text-right" : "font-poppins text-left",
+                        isActive(item.path)
+                          ? "text-primary bg-primary/10"
+                          : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                      )}
+                    >
+                      {item.label}
+                      {isActive(item.path) && (
+                        <span className={cn(
+                          "absolute top-1/2 -translate-y-1/2 w-1 h-6 bg-primary rounded-full",
+                          isRTL ? "right-0" : "left-0"
+                        )} />
+                      )}
+                    </Link>
+                  ))}
+                </nav>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
-
-        {/* Mobile Navigation */}
-        {isOpen && (
-          <nav className="md:hidden py-4 border-t border-border animate-fade-in">
-            {navItems.map((item) => (
-              <Link
-                key={item.path}
-                to={item.path}
-                onClick={() => setIsOpen(false)}
-                className={cn(
-                  "block py-3 text-base font-medium transition-colors duration-300",
-                  isRTL ? "font-vazir" : "font-orbitron",
-                  isActive(item.path)
-                    ? "text-primary"
-                    : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-        )}
       </div>
     </header>
   );

@@ -19,7 +19,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        orbitron: ['Orbitron', 'sans-serif'],
+        poppins: ['Poppins', 'sans-serif'],
         vazir: ['Vazirmatn', 'sans-serif'],
       },
       colors: {

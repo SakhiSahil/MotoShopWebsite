@@ -57,7 +57,7 @@ const ProductDetails = () => {
           <div className="text-center">
             <h1 className={cn(
               "text-2xl font-bold text-foreground mb-4",
-              isRTL ? "font-vazir" : "font-orbitron"
+              isRTL ? "font-vazir" : "font-poppins"
             )}>
               {isRTL ? 'محصول یافت نشد' : 'Product Not Found'}
             </h1>
@@ -88,7 +88,7 @@ const ProductDetails = () => {
     { icon: Gauge, label: t('products.engine'), value: language === 'fa' ? (motorcycle.engineFa || motorcycle.engine) : motorcycle.engine },
     { icon: Zap, label: t('products.power'), value: language === 'fa' ? (motorcycle.powerFa || motorcycle.power) : motorcycle.power },
     { icon: Fuel, label: t('products.speed'), value: language === 'fa' ? (motorcycle.topSpeedFa || motorcycle.topSpeed) : motorcycle.topSpeed },
-    { icon: Calendar, label: t('products.year'), value: motorcycle.year.toString() },
+    { icon: Calendar, label: t('products.year'), value: language === 'fa' ? (motorcycle.yearFa || String(motorcycle.year)) : String(motorcycle.year) },
     { icon: Weight, label: isRTL ? 'وزن' : 'Weight', value: language === 'fa' ? (motorcycle.weightFa || motorcycle.weight || '200 kg') : (motorcycle.weight || '200 kg') },
     { icon: Fuel, label: isRTL ? 'ظرفیت باک' : 'Fuel Tank', value: language === 'fa' ? (motorcycle.fuelCapacityFa || motorcycle.fuelCapacity || '17 L') : (motorcycle.fuelCapacity || '17 L') },
   ];
@@ -108,7 +108,7 @@ const ProductDetails = () => {
   return (
     <>
       <Helmet>
-        <title>{language === 'fa' ? motorcycle.nameFa : motorcycle.name} | {isRTL ? 'موتوشاپ' : 'MotoShop'}</title>
+        <title>{language === 'fa' ? motorcycle.nameFa : motorcycle.name} | {isRTL ? 'فولاد سکلیت' : 'Polad Cyclet'}</title>
         <meta 
           name="description" 
           content={language === 'fa' ? motorcycle.descriptionFa : motorcycle.description} 
@@ -171,7 +171,7 @@ const ProductDetails = () => {
                       <div className="absolute top-4 right-4 rtl:right-auto rtl:left-4">
                         <span className={cn(
                           "px-4 py-2 rounded-full text-sm font-medium racing-gradient text-primary-foreground",
-                          isRTL ? "font-vazir" : "font-orbitron"
+                          isRTL ? "font-vazir" : "font-poppins"
                         )}>
                           {isRTL ? 'ویژه' : 'Featured'}
                         </span>
@@ -207,7 +207,7 @@ const ProductDetails = () => {
                   {/* Brand */}
                   <p className={cn(
                     "text-primary font-medium",
-                    isRTL ? "font-vazir" : "font-orbitron"
+                    isRTL ? "font-vazir" : "font-poppins"
                   )}>
                     {language === 'fa' ? motorcycle.brandFa : motorcycle.brand}
                   </p>
@@ -215,7 +215,7 @@ const ProductDetails = () => {
                   {/* Name */}
                   <h1 className={cn(
                     "text-3xl md:text-4xl font-bold text-foreground",
-                    isRTL ? "font-vazir" : "font-orbitron"
+                    isRTL ? "font-vazir" : "font-poppins"
                   )}>
                     {language === 'fa' ? motorcycle.nameFa : motorcycle.name}
                   </h1>
@@ -243,7 +243,7 @@ const ProductDetails = () => {
                     </p>
                     <p className={cn(
                       "text-3xl md:text-4xl font-bold text-primary",
-                      isRTL ? "font-vazir" : "font-orbitron"
+                      isRTL ? "font-vazir" : "font-poppins"
                     )}>
                       {language === 'fa' 
                         ? `${motorcycle.priceFa} ${t('common.currency')}`
@@ -262,13 +262,13 @@ const ProductDetails = () => {
                         <spec.icon className="h-6 w-6 text-primary mx-auto mb-2" />
                         <p className={cn(
                           "text-xs text-muted-foreground mb-1",
-                          isRTL ? "font-vazir" : "font-orbitron"
+                          isRTL ? "font-vazir" : "font-poppins"
                         )}>
                           {spec.label}
                         </p>
                         <p className={cn(
                           "font-semibold text-foreground",
-                          isRTL ? "font-vazir" : "font-orbitron"
+                          isRTL ? "font-vazir" : "font-poppins"
                         )}>
                           {spec.value}
                         </p>
@@ -283,7 +283,7 @@ const ProductDetails = () => {
                       onClick={handleCall}
                       className={cn(
                         "flex-1 racing-gradient text-primary-foreground gap-2",
-                        isRTL ? "font-vazir" : "font-orbitron"
+                        isRTL ? "font-vazir" : "font-poppins"
                       )}
                     >
                       <Phone className="h-5 w-5" />
@@ -295,7 +295,7 @@ const ProductDetails = () => {
                       onClick={handleWhatsApp}
                       className={cn(
                         "flex-1 border-primary/50 text-foreground hover:bg-primary/10 gap-2",
-                        isRTL ? "font-vazir" : "font-orbitron"
+                        isRTL ? "font-vazir" : "font-poppins"
                       )}
                     >
                       <MessageCircle className="h-5 w-5" />
@@ -313,7 +313,7 @@ const ProductDetails = () => {
               <div className="container mx-auto px-4">
                 <h2 className={cn(
                   "text-2xl md:text-3xl font-bold text-foreground mb-8",
-                  isRTL ? "font-vazir" : "font-orbitron"
+                  isRTL ? "font-vazir" : "font-poppins"
                 )}>
                   {isRTL ? 'محصولات مشابه' : 'Related Products'}
                 </h2>

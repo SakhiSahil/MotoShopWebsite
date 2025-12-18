@@ -17,14 +17,22 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   shield: Shield,
 };
 
-// Animated counter component with easing
+// Animated counter component with easing - re-animates on each visibility change
 const AnimatedCounter: React.FC<{ value: string; isVisible: boolean }> = ({ value, isVisible }) => {
   const [displayValue, setDisplayValue] = useState('0');
-  const hasAnimated = useRef(false);
+  const animationRef = useRef<number | null>(null);
   
   useEffect(() => {
-    if (!isVisible || hasAnimated.current) return;
-    hasAnimated.current = true;
+    // Cancel any running animation
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+    }
+    
+    if (!isVisible) {
+      // Reset to 0 when not visible
+      setDisplayValue('0');
+      return;
+    }
     
     // Extract number from value (e.g., "5000+" -> 5000)
     const numMatch = value.match(/\d+/);
@@ -35,7 +43,7 @@ const AnimatedCounter: React.FC<{ value: string; isVisible: boolean }> = ({ valu
     
     const targetNum = parseInt(numMatch[0]);
     const suffix = value.replace(/[\d۰-۹]+/, '');
-    const duration = 2500;
+    const duration = 2000;
     const startTime = Date.now();
     
     const easeOutQuart = (t: number): number => 1 - Math.pow(1 - t, 4);
@@ -55,13 +63,19 @@ const AnimatedCounter: React.FC<{ value: string; isVisible: boolean }> = ({ valu
       setDisplayValue(displayNum + suffix);
       
       if (progress < 1) {
-        requestAnimationFrame(animate);
+        animationRef.current = requestAnimationFrame(animate);
       } else {
         setDisplayValue(value);
       }
     };
     
-    requestAnimationFrame(animate);
+    animationRef.current = requestAnimationFrame(animate);
+    
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
   }, [value, isVisible]);
   
   return <>{displayValue}</>;
@@ -105,7 +119,7 @@ const StatsSection: React.FC = () => {
         >
           <h2 className={cn(
             "text-2xl md:text-3xl font-bold text-foreground mb-2",
-            isRTL ? "font-vazir" : "font-orbitron"
+            isRTL ? "font-vazir" : "font-poppins"
           )}>
             {isRTL ? 'دستاوردهای ما' : 'Our Achievements'}
           </h2>
@@ -124,7 +138,7 @@ const StatsSection: React.FC = () => {
               <div
                 key={stat.id || index}
               className={cn(
-                "group relative text-center p-6 md:p-8 rounded-3xl bg-card/50 backdrop-blur-sm border border-border/50 hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/10",
+                "group relative text-center p-6 md:p-8 rounded-3xl bg-card backdrop-blur-sm border border-border/50 hover:border-primary/50 stats-card",
                 getAnimationClasses(isVisible, scrollDirection)
               )}
               style={{ transitionDelay: isVisible ? `${index * 100}ms` : '0ms' }}
@@ -138,7 +152,7 @@ const StatsSection: React.FC = () => {
                   </div>
                   <p className={cn(
                     "text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-2 tracking-tight",
-                    isRTL ? "font-vazir" : "font-orbitron"
+                    isRTL ? "font-vazir" : "font-poppins"
                   )}>
                     <AnimatedCounter value={stat.value} isVisible={isVisible} />
                   </p>

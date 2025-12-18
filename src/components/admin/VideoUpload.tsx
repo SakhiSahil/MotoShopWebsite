@@ -4,7 +4,7 @@ import { Upload, X, Loader2, Video } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { getImageUrl } from "@/lib/imageUtils";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 interface VideoUploadProps {
   label?: string;

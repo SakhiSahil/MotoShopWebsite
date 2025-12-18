@@ -49,7 +49,7 @@ router.post('/', authMiddleware, upload.single('image'), (req, res) => {
     const id = uuidv4();
     const {
       name, name_fa, brand, brand_fa, category, category_fa,
-      price, price_fa, engine, engine_fa, power, power_fa,
+      price, price_fa, year, year_fa, engine, engine_fa, power, power_fa,
       top_speed, top_speed_fa, weight, weight_fa,
       fuel_capacity, fuel_capacity_fa, description, description_fa,
       featured, in_stock, inStock
@@ -63,14 +63,14 @@ router.post('/', authMiddleware, upload.single('image'), (req, res) => {
     prepare(`
       INSERT INTO products (
         id, name, name_fa, brand, brand_fa, category, category_fa,
-        price, price_fa, engine, engine_fa, power, power_fa,
+        price, price_fa, year, year_fa, engine, engine_fa, power, power_fa,
         top_speed, top_speed_fa, weight, weight_fa,
         fuel_capacity, fuel_capacity_fa, description, description_fa,
         image, gallery, featured, in_stock
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
       id, name, name_fa, brand, brand_fa, category, category_fa,
-      price, price_fa, engine, engine_fa, power, power_fa,
+      price, price_fa, year || '', year_fa || '', engine, engine_fa, power, power_fa,
       top_speed, top_speed_fa, weight, weight_fa,
       fuel_capacity, fuel_capacity_fa, description, description_fa,
       image, gallery, isFeatured ? 1 : 0, isInStock ? 1 : 0
@@ -94,7 +94,7 @@ router.put('/:id', authMiddleware, upload.single('image'), (req, res) => {
 
     const {
       name, name_fa, brand, brand_fa, category, category_fa,
-      price, price_fa, engine, engine_fa, power, power_fa,
+      price, price_fa, year, year_fa, engine, engine_fa, power, power_fa,
       top_speed, top_speed_fa, weight, weight_fa,
       fuel_capacity, fuel_capacity_fa, description, description_fa,
       featured, in_stock, inStock
@@ -108,14 +108,14 @@ router.put('/:id', authMiddleware, upload.single('image'), (req, res) => {
     prepare(`
       UPDATE products SET
         name = ?, name_fa = ?, brand = ?, brand_fa = ?, category = ?, category_fa = ?,
-        price = ?, price_fa = ?, engine = ?, engine_fa = ?, power = ?, power_fa = ?,
+        price = ?, price_fa = ?, year = ?, year_fa = ?, engine = ?, engine_fa = ?, power = ?, power_fa = ?,
         top_speed = ?, top_speed_fa = ?, weight = ?, weight_fa = ?,
         fuel_capacity = ?, fuel_capacity_fa = ?, description = ?, description_fa = ?,
         image = ?, gallery = ?, featured = ?, in_stock = ?
       WHERE id = ?
     `).run(
       name, name_fa, brand, brand_fa, category, category_fa,
-      price, price_fa, engine, engine_fa, power, power_fa,
+      price, price_fa, year || '', year_fa || '', engine, engine_fa, power, power_fa,
       top_speed, top_speed_fa, weight, weight_fa,
       fuel_capacity, fuel_capacity_fa, description, description_fa,
       image, gallery, isFeatured ? 1 : 0, isInStock ? 1 : 0, id

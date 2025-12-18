@@ -94,12 +94,12 @@ const Contact: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>{isRTL ? 'تماس با ما | موتوشاپ' : 'Contact Us | MotoShop'}</title>
+        <title>{isRTL ? 'تماس با ما | فولاد سکلیت' : 'Contact Us | Polad Cyclet'}</title>
         <meta 
           name="description" 
           content={isRTL 
-            ? 'با موتوشاپ تماس بگیرید. آدرس، تلفن و فرم تماس.'
-            : 'Contact MotoShop. Address, phone, and contact form.'
+            ? 'با فولاد سکلیت تماس بگیرید. آدرس، تلفن و فرم تماس.'
+            : 'Contact Polad Cyclet. Address, phone, and contact form.'
           } 
         />
       </Helmet>
@@ -113,7 +113,7 @@ const Contact: React.FC = () => {
             <div className="container mx-auto px-4">
               <h1 className={cn(
                 "section-title text-foreground mb-4",
-                isRTL ? "font-vazir" : "font-orbitron"
+                isRTL ? "font-vazir" : "font-poppins"
               )}>
                 {t('contact.title')}
               </h1>
@@ -144,7 +144,7 @@ const Contact: React.FC = () => {
                         </div>
                         <h3 className={cn(
                           "font-semibold text-foreground mb-2",
-                          isRTL ? "font-vazir" : "font-orbitron"
+                          isRTL ? "font-vazir" : "font-poppins"
                         )}>
                           {item.title}
                         </h3>
@@ -178,7 +178,7 @@ const Contact: React.FC = () => {
                   <div className="p-8 rounded-2xl bg-card border border-border">
                     <h2 className={cn(
                       "text-2xl font-bold text-foreground mb-6",
-                      isRTL ? "font-vazir" : "font-orbitron"
+                      isRTL ? "font-vazir" : "font-poppins"
                     )}>
                       {isRTL ? 'ارسال پیام' : 'Send Message'}
                     </h2>
@@ -251,7 +251,7 @@ const Contact: React.FC = () => {
                         disabled={submitting}
                         className={cn(
                           "w-full racing-gradient text-primary-foreground gap-2",
-                          isRTL ? "font-vazir" : "font-orbitron"
+                          isRTL ? "font-vazir" : "font-poppins"
                         )}
                       >
                         {submitting ? (

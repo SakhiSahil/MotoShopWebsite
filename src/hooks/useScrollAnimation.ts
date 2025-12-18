@@ -1,77 +1,116 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useLayoutEffect, useEffect, useRef, useCallback } from 'react';
 
 interface ScrollAnimationOptions {
   threshold?: number;
   rootMargin?: string;
+  // Optional: set a custom scroll container as root (e.g., a wrapper with overflow)
+  root?: Element | null;
 }
 
 export const useScrollAnimation = (options: ScrollAnimationOptions = {}) => {
-  const { threshold = 0.15, rootMargin = '0px' } = options;
+  const { threshold = 0, rootMargin = '0px', root = null } = options;
+
   const [isVisible, setIsVisible] = useState(false);
-  const [hasAnimated, setHasAnimated] = useState(false);
-  const sectionRef = useRef<HTMLElement>(null);
-  const lastScrollY = useRef(0);
   const [scrollDirection, setScrollDirection] = useState<'up' | 'down'>('down');
 
+  const lastScrollY = useRef(0);
+  const elementRef = useRef<HTMLElement | null>(null);
+  const observerRef = useRef<IntersectionObserver | null>(null);
+
+  // Track scroll direction
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       setScrollDirection(currentScrollY > lastScrollY.current ? 'down' : 'up');
       lastScrollY.current = currentScrollY;
     };
-
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  useEffect(() => {
-    // Fallback timeout
-    const fallbackTimer = setTimeout(() => {
-      setIsVisible(true);
-      setHasAnimated(true);
-    }, 800);
+  // Create/attach observer
+  const attachObserver = useCallback(
+    (el: HTMLElement) => {
+      // Clean up any previous observer
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+        observerRef.current = null;
+      }
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          setHasAnimated(true);
-          clearTimeout(fallbackTimer);
-        } else if (hasAnimated) {
-          // Only hide when scrolling away after first animation
-          setIsVisible(false);
-        }
-      },
-      { threshold, rootMargin }
-    );
+      const obs = new IntersectionObserver(
+        ([entry]) => {
+          setIsVisible(entry.isIntersecting);
+        },
+        { threshold, rootMargin, root: root ?? null }
+      );
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
+      obs.observe(el);
+      observerRef.current = obs;
+    },
+    [threshold, rootMargin, root]
+  );
+
+  // Callback ref to attach as soon as the element mounts/changes
+  const sectionRef = useCallback((el: HTMLElement | null) => {
+    // Unobserve old element
+    if (elementRef.current && observerRef.current) {
+      observerRef.current.unobserve(elementRef.current);
     }
+    elementRef.current = el;
 
+    if (el) {
+      // Initial check before paint (prevents "stuck hidden" on refresh/navigation)
+      const rect = el.getBoundingClientRect();
+      const inView =
+        rect.top < window.innerHeight &&
+        rect.bottom > 0 &&
+        rect.left < window.innerWidth &&
+        rect.right > 0;
+      setIsVisible(inView);
+
+      // Attach observer
+      attachObserver(el);
+    }
+  }, [attachObserver]);
+
+  // Safety: re-validate visibility after mount (accounts for late layout changes)
+  useLayoutEffect(() => {
+    const el = elementRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const inView =
+      rect.top < window.innerHeight &&
+      rect.bottom > 0 &&
+      rect.left < window.innerWidth &&
+      rect.right > 0;
+    setIsVisible(inView);
+  }, []);
+
+  // Cleanup on unmount
+  useEffect(() => {
     return () => {
-      observer.disconnect();
-      clearTimeout(fallbackTimer);
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+        observerRef.current = null;
+      }
     };
-  }, [threshold, rootMargin, hasAnimated]);
+  }, []);
 
-  return { isVisible, sectionRef, scrollDirection, hasAnimated };
+  return { isVisible, sectionRef, scrollDirection };
 };
 
 // Animation classes based on visibility and scroll direction
 export const getAnimationClasses = (
-  isVisible: boolean, 
+  isVisible: boolean,
   scrollDirection: 'up' | 'down' = 'down',
-  delay: number = 0
 ): string => {
-  const baseTransition = 'transition-all duration-700 ease-out';
-  
+  // Restrict transitions to the properties we animate
+  const baseTransition = 'transition-opacity transition-transform duration-700 ease-out';
+
   if (isVisible) {
     return `${baseTransition} opacity-100 translate-y-0`;
   }
-  
-  // When scrolling down, items come from below
-  // When scrolling up, items come from above
+
   const translateClass = scrollDirection === 'down' ? 'translate-y-12' : '-translate-y-12';
   return `${baseTransition} opacity-0 ${translateClass}`;
 };

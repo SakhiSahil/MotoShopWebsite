@@ -42,7 +42,7 @@ const Products: React.FC = () => {
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000000]);
   const [priceInitialized, setPriceInitialized] = useState(false);
-  const [selectedYears, setSelectedYears] = useState<number[]>([]);
+  const [selectedYears, setSelectedYears] = useState<(number | string)[]>([]);
   const [inStockOnly, setInStockOnly] = useState(false);
   const [sortBy, setSortBy] = useState<SortOption>('newest');
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -57,7 +57,7 @@ const Products: React.FC = () => {
 
   // Get unique years from products
   const availableYears = useMemo(() => {
-    const years = [...new Set(products.map(p => p.year))].filter(Boolean).sort((a, b) => b - a);
+    const years = [...new Set(products.map(p => p.year))].filter(Boolean).sort((a, b) => Number(b) - Number(a));
     return years;
   }, [products]);
 
@@ -128,7 +128,7 @@ const Products: React.FC = () => {
         break;
       case 'newest':
       default:
-        result.sort((a, b) => b.year - a.year);
+        result.sort((a, b) => Number(b.year) - Number(a.year));
         break;
     }
 
@@ -165,7 +165,7 @@ const Products: React.FC = () => {
   };
 
   // Toggle year selection
-  const toggleYear = (year: number) => {
+  const toggleYear = (year: number | string) => {
     setSelectedYears(prev => 
       prev.includes(year) ? prev.filter(y => y !== year) : [...prev, year]
     );
@@ -302,7 +302,7 @@ const Products: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>{isRTL ? 'محصولات | موتوشاپ' : 'Products | MotoShop'}</title>
+        <title>{isRTL ? 'محصولات | فولاد سکلیت' : 'Products | Polad Cyclet'}</title>
         <meta 
           name="description" 
           content={isRTL 
@@ -321,7 +321,7 @@ const Products: React.FC = () => {
             <div className="container mx-auto px-4">
               <h1 className={cn(
                 "section-title text-foreground mb-4",
-                isRTL ? "font-vazir" : "font-orbitron"
+                isRTL ? "font-vazir" : "font-poppins"
               )}>
                 {t('products.title')}
               </h1>
@@ -472,7 +472,7 @@ const Products: React.FC = () => {
                       <Filter className="h-16 w-16 text-muted-foreground/50 mx-auto mb-4" />
                       <p className={cn(
                         "text-lg text-muted-foreground mb-4",
-                        isRTL ? "font-vazir" : "font-orbitron"
+                        isRTL ? "font-vazir" : "font-poppins"
                       )}>
                         {isRTL ? 'موتورسیکلتی یافت نشد' : 'No motorcycles found'}
                       </p>

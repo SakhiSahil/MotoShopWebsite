@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'moto-shop-secret-key-change-in-production';
+const JWT_SECRET = process.env.JWT_SECRET || 'polad-cyclet-secret-key-change-in-production';
 
 const authMiddleware = (req, res, next) => {
   const authHeader = req.headers.authorization;

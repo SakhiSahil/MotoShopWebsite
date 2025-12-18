@@ -21,7 +21,7 @@ const staticDealers: Dealer[] = [
     city: 'Kabul',
     city_fa: 'کابل',
     phone: '+93-799-111111',
-    email: 'kabul@motoshop.af',
+    email: 'kabul@poladcyclet.af',
     hours: 'Sat-Thu: 8 AM - 6 PM',
     hours_fa: 'شنبه تا پنجشنبه: ۸ صبح - ۶ عصر',
     map_url: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d52615.37529687997!2d69.13503772695312!3d34.55301080000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38d16eb0d2b5b7f5%3A0xfff531b6e2a3d6f8!2sKabul%2C%20Afghanistan!5e0!3m2!1sen!2s!4v1702000000000!5m2!1sen!2s',
@@ -37,7 +37,7 @@ const staticDealers: Dealer[] = [
     city: 'Herat',
     city_fa: 'هرات',
     phone: '+93-799-222222',
-    email: 'herat@motoshop.af',
+    email: 'herat@poladcyclet.af',
     hours: 'Sat-Thu: 8 AM - 6 PM',
     hours_fa: 'شنبه تا پنجشنبه: ۸ صبح - ۶ عصر',
     map_url: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d107234.02741999999!2d62.1540!3d34.3529!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3f3ce1da33f91f7d%3A0x7a6348f7ab8e6f2!2sHerat%2C%20Afghanistan!5e0!3m2!1sen!2s!4v1702000000000!5m2!1sen!2s',
@@ -53,7 +53,7 @@ const staticDealers: Dealer[] = [
     city: 'Mazar-i-Sharif',
     city_fa: 'مزار شریف',
     phone: '+93-799-333333',
-    email: 'mazar@motoshop.af',
+    email: 'mazar@poladcyclet.af',
     hours: 'Sat-Thu: 8 AM - 6 PM',
     hours_fa: 'شنبه تا پنجشنبه: ۸ صبح - ۶ عصر',
     map_url: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d51234.09241999999!2d67.1128!3d36.7069!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3f6007b5a16c48d7%3A0x7f3b89c9f8d1e2a4!2sMazar-i-Sharif%2C%20Afghanistan!5e0!3m2!1sen!2s!4v1702000000000!5m2!1sen!2s',
@@ -69,7 +69,7 @@ const staticDealers: Dealer[] = [
     city: 'Kandahar',
     city_fa: 'قندهار',
     phone: '+93-799-444444',
-    email: 'kandahar@motoshop.af',
+    email: 'kandahar@poladcyclet.af',
     hours: 'Sat-Thu: 8 AM - 6 PM',
     hours_fa: 'شنبه تا پنجشنبه: ۸ صبح - ۶ عصر',
     map_url: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d54321.12341999999!2d65.7101!3d31.6078!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ed8f7ab8e6f2d3c%3A0x8a7b6c5d4e3f2a1b!2sKandahar%2C%20Afghanistan!5e0!3m2!1sen!2s!4v1702000000000!5m2!1sen!2s',
@@ -123,17 +123,17 @@ const Dealers: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>{isRTL ? 'نمایندگی‌ها | موتوشاپ' : 'Dealers | MotoShop'}</title>
+        <title>{isRTL ? 'نمایندگی‌ها | فولاد سکلیت' : 'Dealers | Polad Cyclet'}</title>
         <meta 
           name="description" 
           content={isRTL 
-            ? 'لیست نمایندگی‌های موتوشاپ در سراسر افغانستان' 
-            : 'List of MotoShop dealerships across Afghanistan'
+            ? 'لیست نمایندگی‌های فولاد سکلیت در سراسر افغانستان' 
+            : 'List of Polad Cyclet dealerships across Afghanistan'
           } 
         />
       </Helmet>
 
-      <div className={cn("min-h-screen bg-background", isRTL ? "font-vazir" : "font-orbitron")}>
+      <div className={cn("min-h-screen bg-background", isRTL ? "font-vazir" : "font-poppins")}>
         <Header />
         
         <main className="pt-20 md:pt-24">
@@ -142,7 +142,7 @@ const Dealers: React.FC = () => {
             <div className="container mx-auto px-4 text-center">
               <h1 className={cn(
                 "text-3xl md:text-5xl font-bold mb-4 text-foreground",
-                isRTL ? "font-vazir" : "font-orbitron"
+                isRTL ? "font-vazir" : "font-poppins"
               )}>
                 {t('dealers.title')}
               </h1>
@@ -202,7 +202,7 @@ const Dealers: React.FC = () => {
                       <CardHeader className="flex flex-row items-start justify-between">
                         <CardTitle className={cn(
                           "text-xl md:text-2xl text-primary",
-                          isRTL ? "font-vazir" : "font-orbitron"
+                          isRTL ? "font-vazir" : "font-poppins"
                         )}>
                           {language === 'fa' ? dealer.name_fa : dealer.name}
                         </CardTitle>

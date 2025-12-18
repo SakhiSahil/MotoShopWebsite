@@ -66,7 +66,7 @@ app.use('/api/faq', faqRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'Moto Shop API is running' });
+  res.json({ status: 'ok', message: 'Polad Cyclet API is running' });
 });
 
 // Serve frontend for all non-API routes in production

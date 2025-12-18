@@ -2,7 +2,7 @@
 # =====================
 # Deploy with: fly deploy
 
-app = "moto-shop-af"
+app = "polad-cyclet-af"
 primary_region = "fra"
 
 [build]

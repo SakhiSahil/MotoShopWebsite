@@ -15,7 +15,7 @@ if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
-const dbPath = path.join(dataDir, 'motoshop.db');
+const dbPath = path.join(dataDir, 'poladcyclet.db');
 
 async function initDb() {
   const SQL = await initSqlJs();
@@ -44,6 +44,8 @@ async function initDb() {
       category_fa TEXT NOT NULL,
       price TEXT NOT NULL,
       price_fa TEXT NOT NULL,
+      year TEXT,
+      year_fa TEXT,
       engine TEXT NOT NULL,
       engine_fa TEXT NOT NULL,
       power TEXT NOT NULL,
@@ -234,6 +236,20 @@ async function initDb() {
     )
   `);
 
+  // Migration: Add year columns to existing products table
+  try {
+    db.run('ALTER TABLE products ADD COLUMN year TEXT');
+    console.log('✅ Added year column to products table');
+  } catch (e) {
+    // Column already exists
+  }
+  try {
+    db.run('ALTER TABLE products ADD COLUMN year_fa TEXT');
+    console.log('✅ Added year_fa column to products table');
+  } catch (e) {
+    // Column already exists
+  }
+
   // Insert default admin (password: admin123)
   const hashedPassword = bcrypt.hashSync('admin123', 10);
   try {
@@ -245,13 +261,13 @@ async function initDb() {
 
   // Insert default settings
   const defaultSettings = [
-    ['site_name', 'Moto Shop', 'موتو شاپ'],
+    ['site_name', 'Polad Cyclet', 'فولاد سکلیت'],
     ['phone', '+93 70 123 4567', '+۹۳ ۷۰ ۱۲۳ ۴۵۶۷'],
-    ['email', 'info@motoshop.af', 'info@motoshop.af'],
+    ['email', 'info@poladcyclet.af', 'info@poladcyclet.af'],
     ['address', 'Kabul, Afghanistan, District 4, Main Street', 'کابل، افغانستان، ناحیه ۴، جاده اصلی'],
     ['whatsapp', '+93701234567', '+93701234567'],
-    ['instagram', '@motoshop_af', '@motoshop_af'],
-    ['facebook', 'motoshopaf', 'motoshopaf'],
+    ['instagram', '@poladcyclet_af', '@poladcyclet_af'],
+    ['facebook', 'poladcycletaf', 'poladcycletaf'],
     ['about_text', 'We are the leading motorcycle dealership in Afghanistan...', 'ما بزرگترین نمایندگی موتورسیکلت در افغانستان هستیم...'],
     ['footer_text', 'Your trusted motorcycle partner in Afghanistan', 'شریک مورد اعتماد شما در موتورسیکلت در افغانستان'],
   ];
@@ -289,10 +305,10 @@ async function initDb() {
 
   // Insert default dealers with map URLs
   const defaultDealers = [
-    ['Kabul Central Dealership', 'نمایندگی مرکزی کابل', 'Kabul, Shahr-e-Naw, Main Road', 'کابل، شهر نو، سرک اصلی', 'Kabul', 'کابل', '+93-799-111111', 'kabul@motoshop.af', 'Sat-Thu: 8 AM - 6 PM', 'شنبه تا پنجشنبه: ۸ صبح - ۶ عصر', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d52615.37529687997!2d69.13503772695312!3d34.55301080000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38d16eb0d2b5b7f5%3A0xfff531b6e2a3d6f8!2sKabul%2C%20Afghanistan!5e0!3m2!1sen!2s!4v1702000000000!5m2!1sen!2s'],
-    ['Herat Dealership', 'نمایندگی هرات', 'Herat, Welayat Road', 'هرات، جاده ولایت', 'Herat', 'هرات', '+93-799-222222', 'herat@motoshop.af', 'Sat-Thu: 8 AM - 6 PM', 'شنبه تا پنجشنبه: ۸ صبح - ۶ عصر', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d107234.02741999999!2d62.1540!3d34.3529!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3f3ce1da33f91f7d%3A0x7a6348f7ab8e6f2!2sHerat%2C%20Afghanistan!5e0!3m2!1sen!2s!4v1702000000000!5m2!1sen!2s'],
-    ['Mazar-i-Sharif Dealership', 'نمایندگی مزار شریف', 'Mazar-i-Sharif, Main Street', 'مزار شریف، سرک عمومی', 'Mazar-i-Sharif', 'مزار شریف', '+93-799-333333', 'mazar@motoshop.af', 'Sat-Thu: 8 AM - 6 PM', 'شنبه تا پنجشنبه: ۸ صبح - ۶ عصر', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d51234.09241999999!2d67.1128!3d36.7069!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3f6007b5a16c48d7%3A0x7f3b89c9f8d1e2a4!2sMazar-i-Sharif%2C%20Afghanistan!5e0!3m2!1sen!2s!4v1702000000000!5m2!1sen!2s'],
-    ['Kandahar Dealership', 'نمایندگی قندهار', 'Kandahar, Shaheed Square', 'قندهار، چهارراهی شهید', 'Kandahar', 'قندهار', '+93-799-444444', 'kandahar@motoshop.af', 'Sat-Thu: 8 AM - 6 PM', 'شنبه تا پنجشنبه: ۸ صبح - ۶ عصر', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d54321.12341999999!2d65.7101!3d31.6078!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ed8f7ab8e6f2d3c%3A0x8a7b6c5d4e3f2a1b!2sKandahar%2C%20Afghanistan!5e0!3m2!1sen!2s!4v1702000000000!5m2!1sen!2s'],
+    ['Kabul Central Dealership', 'نمایندگی مرکزی کابل', 'Kabul, Shahr-e-Naw, Main Road', 'کابل، شهر نو، سرک اصلی', 'Kabul', 'کابل', '+93-799-111111', 'kabul@poladcyclet.af', 'Sat-Thu: 8 AM - 6 PM', 'شنبه تا پنجشنبه: ۸ صبح - ۶ عصر', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d52615.37529687997!2d69.13503772695312!3d34.55301080000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38d16eb0d2b5b7f5%3A0xfff531b6e2a3d6f8!2sKabul%2C%20Afghanistan!5e0!3m2!1sen!2s!4v1702000000000!5m2!1sen!2s'],
+    ['Herat Dealership', 'نمایندگی هرات', 'Herat, Welayat Road', 'هرات، جاده ولایت', 'Herat', 'هرات', '+93-799-222222', 'herat@poladcyclet.af', 'Sat-Thu: 8 AM - 6 PM', 'شنبه تا پنجشنبه: ۸ صبح - ۶ عصر', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d107234.02741999999!2d62.1540!3d34.3529!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3f3ce1da33f91f7d%3A0x7a6348f7ab8e6f2!2sHerat%2C%20Afghanistan!5e0!3m2!1sen!2s!4v1702000000000!5m2!1sen!2s'],
+    ['Mazar-i-Sharif Dealership', 'نمایندگی مزار شریف', 'Mazar-i-Sharif, Main Street', 'مزار شریف، سرک عمومی', 'Mazar-i-Sharif', 'مزار شریف', '+93-799-333333', 'mazar@poladcyclet.af', 'Sat-Thu: 8 AM - 6 PM', 'شنبه تا پنجشنبه: ۸ صبح - ۶ عصر', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d51234.09241999999!2d67.1128!3d36.7069!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3f6007b5a16c48d7%3A0x7f3b89c9f8d1e2a4!2sMazar-i-Sharif%2C%20Afghanistan!5e0!3m2!1sen!2s!4v1702000000000!5m2!1sen!2s'],
+    ['Kandahar Dealership', 'نمایندگی قندهار', 'Kandahar, Shaheed Square', 'قندهار، چهارراهی شهید', 'Kandahar', 'قندهار', '+93-799-444444', 'kandahar@poladcyclet.af', 'Sat-Thu: 8 AM - 6 PM', 'شنبه تا پنجشنبه: ۸ صبح - ۶ عصر', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d54321.12341999999!2d65.7101!3d31.6078!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ed8f7ab8e6f2d3c%3A0x8a7b6c5d4e3f2a1b!2sKandahar%2C%20Afghanistan!5e0!3m2!1sen!2s!4v1702000000000!5m2!1sen!2s'],
   ];
 
   defaultDealers.forEach(([name, name_fa, address, address_fa, city, city_fa, phone, email, hours, hours_fa, map_url], index) => {

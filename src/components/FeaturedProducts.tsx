@@ -40,7 +40,7 @@ const FeaturedProducts: React.FC = () => {
           <div>
             <h2 className={cn(
               "text-2xl md:text-3xl font-bold text-foreground mb-1",
-              isRTL ? "font-vazir" : "font-orbitron"
+              isRTL ? "font-vazir" : "font-poppins"
             )}>
               {t('products.featured')}
             </h2>
@@ -57,7 +57,7 @@ const FeaturedProducts: React.FC = () => {
             size="sm"
             className={cn(
               "self-start md:self-auto border-primary/50 text-foreground hover:bg-primary/10 gap-2 text-xs",
-              isRTL ? "font-vazir" : "font-orbitron"
+              isRTL ? "font-vazir" : "font-poppins"
             )}
           >
             <Link to="/products">
