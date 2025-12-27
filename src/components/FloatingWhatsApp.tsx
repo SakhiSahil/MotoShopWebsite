@@ -3,6 +3,8 @@ import { MessageCircle, X } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { contactAPI } from '@/lib/api';
 import { cn } from '@/lib/utils';
+import { FaWhatsapp } from "react-icons/fa";
+
 
 const FloatingWhatsApp: React.FC = () => {
   const { isRTL } = useLanguage();
@@ -40,7 +42,7 @@ const FloatingWhatsApp: React.FC = () => {
 
   const handleClick = () => {
     if (!whatsappNumber) return;
-    const message = isRTL 
+    const message = isRTL
       ? 'سلام، من از وبسایت شما بازدید کردم و سوالی دارم.'
       : 'Hello, I visited your website and have a question.';
     window.open(`https://wa.me/${whatsappNumber.replace('+', '')}?text=${encodeURIComponent(message)}`, '_blank');
@@ -49,21 +51,21 @@ const FloatingWhatsApp: React.FC = () => {
   if (!whatsappNumber) return null;
 
   return (
-    <div 
+    <div
       className={cn(
         "fixed bottom-6 z-50 flex items-center gap-3",
         isRTL ? "left-6" : "right-6"
       )}
     >
       {/* Tooltip */}
-      <div 
+      <div
         className={cn(
           "bg-card border border-border rounded-2xl px-4 py-3 shadow-xl transition-all duration-500",
           showTooltip && !isHovered ? "opacity-100 translate-x-0" : "opacity-0",
           isRTL ? "translate-x-4" : "-translate-x-4"
         )}
       >
-        <button 
+        <button
           onClick={() => setShowTooltip(false)}
           className="absolute -top-2 -right-2 rtl:-right-auto rtl:-left-2 w-5 h-5 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-destructive hover:text-destructive-foreground transition-colors"
         >
@@ -91,10 +93,10 @@ const FloatingWhatsApp: React.FC = () => {
       >
         {/* Pulse animation ring */}
         <span className="absolute inset-0 rounded-full bg-[#25D366] animate-ping opacity-30" />
-        
+
         {/* Icon */}
         <span className="relative flex items-center justify-center w-full h-full">
-          <MessageCircle className="w-7 h-7 transition-transform duration-300 group-hover:scale-110" fill="currentColor" />
+          <FaWhatsapp className="w-7 h-7 text-green-500 transition-transform duration-300 group-hover:scale-110" />
         </span>
       </button>
     </div>
