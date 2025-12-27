@@ -34,29 +34,30 @@ const FeaturedProducts: React.FC = () => {
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className={cn(
-          "flex flex-col md:flex-row md:items-end md:justify-between gap-3 mb-8",
+          "flex flex-col  md:flex-row  justify-center gap-3 mb-8",
           getAnimationClasses(isVisible, scrollDirection)
         )}>
-          <div>
+         
+          <div className="flex flex-col justify-center">
             <h2 className={cn(
-              "text-2xl md:text-3xl font-bold text-foreground mb-1",
+              "text-xl md:text-2xl font-bold text-foreground mb-1",
               isRTL ? "font-vazir" : "font-poppins"
             )}>
               {t('products.featured')}
             </h2>
             <p className={cn(
-              "text-muted-foreground text-sm",
+              "text-muted-foreground mt-4 text-sm",
               isRTL ? "font-vazir" : ""
             )}>
               {t('products.subtitle')}
             </p>
-          </div>
-          <Button
+            
+         <Button
             asChild
             variant="outline"
             size="sm"
             className={cn(
-              "self-start md:self-auto border-primary/50 text-foreground hover:bg-primary/10 gap-2 text-xs",
+              "self-start mt-4 md:self-auto border-primary/50 text-foreground bg-primary/10 hover:bg-primary/20 gap-2 text-xs",
               isRTL ? "font-vazir" : "font-poppins"
             )}
           >
@@ -65,6 +66,8 @@ const FeaturedProducts: React.FC = () => {
               {isRTL ? <ArrowLeft className="h-3 w-3" /> : <ArrowRight className="h-3 w-3" />}
             </Link>
           </Button>
+          </div>
+        
         </div>
 
         {/* Grid */}

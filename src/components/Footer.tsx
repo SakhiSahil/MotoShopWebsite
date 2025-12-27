@@ -65,7 +65,7 @@ const Footer: React.FC = () => {
           setContactInfo({
             address: { 
               en: contactSettings.address?.value || 'Kabul, Shahr-e-Naw, Main Road, No. 123',
-              fa: contactSettings.address?.value_fa || 'کابل، شهر نو، سرک اصلی، پلاک ۱۲۳'
+              fa: contactSettings.address?.value_fa || 'هرات ،  جاده قمندانی، پلاک ۱۲۳'
             },
             phone: { 
               en: contactSettings.phone?.value || '+93-799-123456',
@@ -95,16 +95,17 @@ const Footer: React.FC = () => {
 
   return (
     <footer className="bg-card border-t border-border">
-      <div className="container mx-auto px-4 py-12 md:py-16">
+      <div className="container  mx-auto px-4 py-6 md:py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Brand */}
           <div className="space-y-4">
-            <Link to="/" className="flex items-center gap-2">
+            <div className="flex justify-center items-center flex-col">
+                <Link to="/" className="flex items-center gap-2">
               {logoUrl ? (
                 <img 
                   src={logoUrl} 
                   alt="Logo" 
-                  className="w-10 h-10 rounded-full object-cover"
+                  className="w-10 h-10 rounded-full object-contain"
                 />
               ) : (
                 <div className="w-10 h-10 rounded-full racing-gradient flex items-center justify-center glow-effect">
@@ -124,7 +125,9 @@ const Footer: React.FC = () => {
             )}>
               {t('footer.description')}
             </p>
-            <div className="flex gap-3">
+            </div>
+          
+            <div className="flex gap-3 justify-center items-center">
               {whatsappNumber && (
                 <a
                   href={`https://wa.me/${whatsappNumber}`}
@@ -255,12 +258,12 @@ const Footer: React.FC = () => {
         </div>
 
         {/* Bottom */}
-        <div className="mt-12 pt-8 border-t border-border text-center">
+        <div className="mt-8 pt-4 border-t border-border text-center">
           <p className={cn(
             "text-muted-foreground text-sm",
             isRTL ? "font-vazir" : ""
           )}>
-            © 2024 {isRTL ? siteName.fa : siteName.en}. {t('footer.rights')}.
+             {isRTL ? siteName.fa : siteName.en}. {t('footer.rights')}.
           </p>
         </div>
       </div>

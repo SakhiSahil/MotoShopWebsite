@@ -64,7 +64,7 @@ const FAQSection: React.FC = () => {
         {/* Header */}
         <h2 
           className={cn(
-            "text-center text-2xl md:text-3xl font-bold text-foreground mb-10",
+            "text-center text-xl md:text-2xl font-bold text-foreground mb-10",
             getAnimationClasses(isVisible, scrollDirection),
             isRTL ? "font-vazir" : "font-poppins"
           )}

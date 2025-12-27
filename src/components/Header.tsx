@@ -50,19 +50,19 @@ const Header: React.FC = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
   <div className="container mx-auto px-4">
-    <div className="flex items-center justify-between h-[10vh]">
+    <div className="flex items-center justify-between h-[6vh] md:h-[9vh]">
       {/* Logo */}
       <Link to="/" className="flex items-center gap-2">
         {logoUrl && (
           <img
             src={getImageUrl(logoUrl)}
             alt="Logo"
-            className="w-10 h-10 md:w-10 md:h-10 rounded-full object-cover"
+            className="w-8 h-8 md:w-8 md:h-7  object-contain"
           />
         )}
         <span
           className={cn(
-            "font-bold text-lg md:text-xl text-foreground",
+            "font-bold text-[14px] md:text-[18px] text-foreground",
             isRTL ? "font-vazir" : "font-poppins"
           )}
         >

@@ -136,22 +136,22 @@ const About: React.FC = () => {
       <div className="min-h-screen bg-background">
         <Header />
         
-        <main className="pt-24 md:pt-28">
+        <main className="pt-12">
           {/* Hero */}
-          <section className="py-16 md:py-24 border-b border-border relative overflow-hidden">
+          <section className="py-8 md:py-12  relative overflow-hidden bg-gradient-to-b from-primary/10 to-background">
             <div className="absolute inset-0 opacity-5">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,hsl(var(--primary))_0%,transparent_70%)]" />
+              <div className="absolute inset-0 " />
             </div>
             <div className="container mx-auto px-4 relative z-10">
               <div className="max-w-3xl mx-auto text-center">
                 <h1 className={cn(
-                  "section-title text-foreground mb-6",
+                  "section-title text-[28px] text-foreground mb-2",
                   isRTL ? "font-vazir" : "font-poppins"
                 )}>
                   {t('about.title')}
                 </h1>
                 <p className={cn(
-                  "text-lg text-muted-foreground",
+                  "text-[14px] text-muted-foreground",
                   isRTL ? "font-vazir" : ""
                 )}>
                   {t('about.subtitle')}
@@ -161,12 +161,12 @@ const About: React.FC = () => {
           </section>
 
           {/* Story */}
-          <section className="py-16 md:py-24">
+          <section className="py-8 md:py-12">
             <div className="container mx-auto px-4">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div className="animate-fade-in">
                   <h2 className={cn(
-                    "text-2xl md:text-3xl font-bold text-foreground mb-6",
+                    "text-xl md:text-2xl font-bold text-foreground mb-6",
                     isRTL ? "font-vazir" : "font-poppins"
                   )}>
                     {isRTL ? aboutContent?.title_fa : aboutContent?.title}
@@ -178,15 +178,15 @@ const About: React.FC = () => {
                     {isRTL ? aboutContent?.content_fa : aboutContent?.content}
                   </p>
                 </div>
-                <div className="relative animate-slide-in-right">
-                  <div className="aspect-square rounded-3xl overflow-hidden">
+                <div className="relative flex justify-center animate-slide-in-right">
+                  <div className="aspect-square rounded-3xl w-[360px] md:w-[400px] overflow-hidden">
                     <img
                       src={aboutContent?.image ? getImageUrl(aboutContent.image) : 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80'}
                       alt="About us"
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <div className="absolute -bottom-6 -right-6 rtl:-right-auto rtl:-left-6 w-32 h-32 rounded-2xl racing-gradient flex items-center justify-center glow-effect">
+                  <div className="absolute -bottom-8 -right-1 rtl:-right-auto rtl:-left-6 w-32 h-32 rounded-2xl racing-gradient flex items-center justify-center glow-effect">
                     <div className="text-center text-primary-foreground">
                       <p className="text-3xl font-bold">{aboutContent?.years_experience || '20+'}</p>
                       <p className="text-xs">{isRTL ? 'سال تجربه' : 'Years'}</p>
@@ -198,7 +198,7 @@ const About: React.FC = () => {
           </section>
 
           {/* Mission */}
-          <section className="py-16 md:py-24 bg-card border-y border-border">
+          {/* <section className="py-16 md:py-24 bg-card border-y border-border">
             <div className="container mx-auto px-4">
               <div className="max-w-3xl mx-auto text-center">
                 <Target className="h-12 w-12 text-primary mx-auto mb-6" />
@@ -216,7 +216,7 @@ const About: React.FC = () => {
                 </p>
               </div>
             </div>
-          </section>
+          </section> */}
 
           {/* Values */}
           {values.length > 0 && (
@@ -262,25 +262,25 @@ const About: React.FC = () => {
 
           {/* Team */}
           {teamMembers.length > 0 && (
-            <section className="py-16 md:py-24 bg-card border-t border-border">
+            <section className="py-10 md:py-14 bg-card ">
               <div className="container mx-auto px-4">
                 <div className="text-center mb-12">
                   <Users className="h-12 w-12 text-primary mx-auto mb-4" />
                   <h2 className={cn(
-                    "text-2xl md:text-3xl font-bold text-foreground",
+                    "text-xl md:text-2xl font-bold text-foreground",
                     isRTL ? "font-vazir" : "font-poppins"
                   )}>
                     {isRTL ? 'تیم ما' : 'Our Team'}
                   </h2>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                <div className="grid grid-cols-3 gap-4 max-w-2xl mx-auto">
                   {teamMembers.map((member, index) => (
                     <div
                       key={member.id}
                       className="text-center animate-fade-in"
                       style={{ animationDelay: `${index * 100}ms` }}
                     >
-                      <div className="w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-primary/20 mb-4">
+                      <div className="w-20 h-20 md:h-32 md:w-32 mx-auto rounded-full overflow-hidden border-4 border-primary/20 mb-4">
                         <img
                           src={getImageUrl(member.image)}
                           alt={isRTL ? member.name_fa : member.name}
@@ -288,13 +288,13 @@ const About: React.FC = () => {
                         />
                       </div>
                       <h3 className={cn(
-                        "text-lg font-bold text-foreground",
+                        "text-[14px] font-bold text-foreground",
                         isRTL ? "font-vazir" : "font-poppins"
                       )}>
                         {isRTL ? member.name_fa : member.name}
                       </h3>
                       <p className={cn(
-                        "text-primary text-sm",
+                        "text-primary text-[8px] text-sm",
                         isRTL ? "font-vazir" : "font-poppins"
                       )}>
                         {isRTL ? member.role_fa : member.role}

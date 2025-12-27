@@ -51,7 +51,7 @@ const HeroCarousel: React.FC = () => {
       </section>
     );
   }
-
+  // سلادیر
   return (
     <section className="relative h-[25vh] md:h-[90vh] w-full overflow-hidden bg-muted">
       {/* Carousel */}

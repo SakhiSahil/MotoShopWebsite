@@ -31,12 +31,12 @@ const BrandsSection: React.FC = () => {
       <div className="container mx-auto px-4">
         <h2 
           className={cn(
-            "text-center text-2xl md:text-3xl font-bold text-foreground mb-10",
+            "text-center text-xl md:text-2xl font-bold text-foreground mb-10",
             getAnimationClasses(isVisible, scrollDirection),
             isRTL ? "font-vazir" : "font-poppins"
           )}
         >
-          {isRTL ? 'برندهای معتبر' : 'Trusted Brands'}
+          {isRTL ? 'برندهای معتبر ما' : 'Trusted Brands'}
         </h2>
         
         <div className="flex flex-wrap justify-center items-center gap-6 md:gap-10">
@@ -49,7 +49,7 @@ const BrandsSection: React.FC = () => {
               )}
               style={{ transitionDelay: isVisible ? `${(index + 1) * 60}ms` : '0ms' }}
             >
-              <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-background border border-border flex items-center justify-center transition-all duration-300 group-hover:border-primary group-hover:scale-110 group-hover:shadow-lg overflow-hidden">
+              <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-background border  flex items-center justify-center border-red-300  shadow-[0_0_100px_rgba(239,68,68,0.3)]  transition-all duration-300 group-hover:border-primary group-hover:scale-110 group-hover:shadow-lg overflow-hidden">
                 {brand.logo.startsWith('http') || brand.logo.startsWith('/') ? (
                   <img src={getImageUrl(brand.logo)} alt={brand.name} className="w-10 h-10 md:w-12 md:h-12 object-contain" />
                 ) : (

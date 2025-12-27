@@ -102,14 +102,14 @@ const StatsSection: React.FC = () => {
   }
 
   return (
-    <section ref={sectionRef} className="py-16 md:py-24 bg-gradient-to-b from-background via-card/50 to-background relative overflow-hidden">
+    <section ref={sectionRef} className="py-16 bg-gradient-to-b from-background via-card/50 to-background relative overflow-hidden">
       {/* Background decorations */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-primary rounded-full blur-3xl" />
       </div>
       
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container mx-auto  relative z-10">
         {/* Section Title */}
         <div 
           className={cn(
@@ -118,7 +118,7 @@ const StatsSection: React.FC = () => {
           )}
         >
           <h2 className={cn(
-            "text-2xl md:text-3xl font-bold text-foreground mb-2",
+            "text-xl md:text-2xl font-bold text-foreground mb-2",
             isRTL ? "font-vazir" : "font-poppins"
           )}>
             {isRTL ? 'دستاوردهای ما' : 'Our Achievements'}
@@ -138,7 +138,7 @@ const StatsSection: React.FC = () => {
               <div
                 key={stat.id || index}
               className={cn(
-                "group relative text-center p-6 md:p-8 rounded-3xl bg-card backdrop-blur-sm border border-border/50 hover:border-primary/50 stats-card",
+                "group  relative text-center p-6 md:p-8 rounded-3xl bg-card backdrop-blur-sm border border-primary/20 stats-card",
                 getAnimationClasses(isVisible, scrollDirection)
               )}
               style={{ transitionDelay: isVisible ? `${index * 100}ms` : '0ms' }}
@@ -146,12 +146,12 @@ const StatsSection: React.FC = () => {
                 {/* Glow effect on hover */}
                 <div className="absolute inset-0 rounded-3xl bg-gradient-to-b from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 
-                <div className="relative z-10">
-                  <div className="inline-flex items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-primary/10 mb-4 transition-all duration-500 group-hover:scale-110 group-hover:bg-primary/20 group-hover:shadow-lg group-hover:shadow-primary/20">
+                <div className="relative  z-10">
+                  <div className="inline-flex  items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-primary/10 mb-4 transition-all duration-500 group-hover:scale-110 group-hover:bg-primary/20 group-hover:shadow-lg  group-hover:shadow-primary/20">
                     <IconComponent className="h-7 w-7 md:h-8 md:w-8 text-primary transition-transform duration-500 group-hover:scale-110" />
                   </div>
                   <p className={cn(
-                    "text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-2 tracking-tight",
+                    "text-xl md:text-4xl lg:text-2xl font-bold text-foreground mb-2 tracking-tight",
                     isRTL ? "font-vazir" : "font-poppins"
                   )}>
                     <AnimatedCounter value={stat.value} isVisible={isVisible} />

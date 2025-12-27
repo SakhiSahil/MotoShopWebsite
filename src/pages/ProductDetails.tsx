@@ -41,7 +41,7 @@ const ProductDetails = () => {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <main className="pt-24 md:pt-28 flex items-center justify-center min-h-[60vh]">
+        <main className="pt-24 md:pt-28  flex items-center justify-center min-h-[60vh]">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </main>
         <Footer />
@@ -53,8 +53,8 @@ const ProductDetails = () => {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <main className="pt-24 md:pt-28 flex items-center justify-center min-h-[60vh]">
-          <div className="text-center">
+        <main className="pt-24 md:pt-28 flex items-center justify-center  min-h-[60vh]">
+          <div className="text-center ">
             <h1 className={cn(
               "text-2xl font-bold text-foreground mb-4",
               isRTL ? "font-vazir" : "font-poppins"
@@ -120,7 +120,7 @@ const ProductDetails = () => {
         
         <main className="pt-24 md:pt-28">
           {/* Breadcrumb */}
-          <section className="py-4 border-b border-border">
+          <section className="py-4 border-b border-border ">
             <div className="container mx-auto px-4">
               <nav className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Link to="/" className="hover:text-primary transition-colors">
@@ -282,7 +282,7 @@ const ProductDetails = () => {
                       size="lg"
                       onClick={handleCall}
                       className={cn(
-                        "flex-1 racing-gradient text-primary-foreground gap-2",
+                        "flex-1 racing-gradient p-3 md:p-0  text-primary-foreground gap-2",
                         isRTL ? "font-vazir" : "font-poppins"
                       )}
                     >
@@ -294,7 +294,7 @@ const ProductDetails = () => {
                       variant="outline"
                       onClick={handleWhatsApp}
                       className={cn(
-                        "flex-1 border-primary/50 text-foreground hover:bg-primary/10 gap-2",
+                        "flex-1 border-primary/50 p-3 md:p-0 text-foreground hover:bg-primary/10 gap-2",
                         isRTL ? "font-vazir" : "font-poppins"
                       )}
                     >

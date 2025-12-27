@@ -107,18 +107,18 @@ const Contact: React.FC = () => {
       <div className="min-h-screen bg-background">
         <Header />
         
-        <main className="pt-24 md:pt-28">
+        <main className="pt-12">
           {/* Hero */}
-          <section className="py-12 md:py-16 border-b border-border">
-            <div className="container mx-auto px-4">
+          <section className="py-8 md:py-12 bg-gradient-to-b from-primary/10 to-background">
+            <div className="container text-center mx-auto px-4">
               <h1 className={cn(
-                "section-title text-foreground mb-4",
+                "text-[24px]  font-bold text-foreground mb-4",
                 isRTL ? "font-vazir" : "font-poppins"
               )}>
                 {t('contact.title')}
               </h1>
               <p className={cn(
-                "text-lg text-muted-foreground max-w-2xl",
+                "text-[16px] text-muted-foreground ",
                 isRTL ? "font-vazir" : ""
               )}>
                 {t('contact.subtitle')}
@@ -127,7 +127,7 @@ const Contact: React.FC = () => {
           </section>
 
           {/* Content */}
-          <section className="py-16 md:py-24">
+          <section className="py-4 md:py-0">
             <div className="container mx-auto px-4">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                 {/* Contact Info */}
@@ -136,7 +136,7 @@ const Contact: React.FC = () => {
                     {contactInfo.map((item, index) => (
                       <div
                         key={index}
-                        className="p-6 rounded-2xl bg-card border border-border card-hover animate-fade-in"
+                        className="p-6 rounded-2xl bg-card border border-border flex flex-col justify-center items-center card-hover text-center animate-fade-in"
                         style={{ animationDelay: `${index * 100}ms` }}
                       >
                         <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">

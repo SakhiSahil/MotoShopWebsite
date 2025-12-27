@@ -136,17 +136,17 @@ const Dealers: React.FC = () => {
       <div className={cn("min-h-screen bg-background", isRTL ? "font-vazir" : "font-poppins")}>
         <Header />
         
-        <main className="pt-20 md:pt-24">
+        <main className="pt-12">
           {/* Hero Section */}
-          <section className="relative py-16 md:py-24 bg-gradient-to-b from-primary/10 to-background">
+          <section className="relative py-8 md:py-10 bg-gradient-to-b from-primary/10 to-background">
             <div className="container mx-auto px-4 text-center">
               <h1 className={cn(
-                "text-3xl md:text-5xl font-bold mb-4 text-foreground",
+                "text-xl md:text-2xl font-bold mb-4 text-foreground",
                 isRTL ? "font-vazir" : "font-poppins"
               )}>
                 {t('dealers.title')}
               </h1>
-              <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+              <p className="text-[12px] md:text-[14px]    text-muted-foreground max-w-2xl mx-auto">
                 {t('dealers.subtitle')}
               </p>
             </div>

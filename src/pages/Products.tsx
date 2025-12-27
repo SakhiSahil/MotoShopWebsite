@@ -315,18 +315,18 @@ const Products: React.FC = () => {
       <div className="min-h-screen bg-background">
         <Header />
         
-        <main className="pt-24 md:pt-28">
+        <main className="pt-12">
           {/* Hero */}
-          <section className="py-12 md:py-16 border-b border-border">
-            <div className="container mx-auto px-4">
+          <section className="py-8 md:py-12 border-b border-border bg-gradient-to-b from-primary/10 to-background">
+            <div className="container mx-auto text-center px-4">
               <h1 className={cn(
-                "section-title text-foreground mb-4",
+                "section-title text-[20px] md:text-[24px] text-foreground mb-2",
                 isRTL ? "font-vazir" : "font-poppins"
               )}>
                 {t('products.title')}
               </h1>
               <p className={cn(
-                "text-lg text-muted-foreground max-w-2xl",
+                "text-lg text-muted-foreground ",
                 isRTL ? "font-vazir" : ""
               )}>
                 {t('products.subtitle')}
@@ -335,7 +335,7 @@ const Products: React.FC = () => {
           </section>
 
           {/* Search and Sort Bar */}
-          <section className="py-4 bg-card border-b border-border sticky top-16 md:top-20 z-40">
+          <section className="py-4 bg-card border-b border-border sticky  top-16 md:top-20 z-40">
             <div className="container mx-auto px-4">
               <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
                 {/* Search */}
@@ -430,7 +430,7 @@ const Products: React.FC = () => {
           </section>
 
           {/* Main Content */}
-          <section className="py-8 md:py-12">
+          <section className="py-8 md:py-12 ">
             <div className="container mx-auto px-4">
               <div className="flex gap-8">
                 {/* Desktop Sidebar Filters */}
