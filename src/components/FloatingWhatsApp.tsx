@@ -3,7 +3,7 @@ import { MessageCircle, X } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { contactAPI } from '@/lib/api';
 import { cn } from '@/lib/utils';
-import { FaWhatsapp } from "react-icons/fa";
+import { FaWhatsapp} from "react-icons/fa";
 
 
 const FloatingWhatsApp: React.FC = () => {
@@ -85,7 +85,7 @@ const FloatingWhatsApp: React.FC = () => {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         className={cn(
-          "group relative w-14 h-14 rounded-full bg-[#25D366] text-white shadow-lg transition-all duration-300",
+          "group relative w-12 h-12 rounded-full bg-[#25D366] text-white shadow-lg transition-all duration-300",
           "hover:scale-110 hover:shadow-[0_0_30px_rgba(37,211,102,0.5)]",
           "active:scale-95"
         )}
@@ -96,7 +96,7 @@ const FloatingWhatsApp: React.FC = () => {
 
         {/* Icon */}
         <span className="relative flex items-center justify-center w-full h-full">
-          <FaWhatsapp className="w-7 h-7 text-green-500 transition-transform duration-300 group-hover:scale-110" />
+          <FaWhatsapp className="w-7 h-7 text-white-500 transition-transform duration-300 group-hover:scale-110" />
         </span>
       </button>
     </div>

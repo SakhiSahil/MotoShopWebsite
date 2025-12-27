@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Instagram, Twitter, Facebook, Youtube, MapPin, Phone, Mail, MessageCircle } from 'lucide-react';
+import { Instagram, Twitter, Facebook, Youtube, MapPin, Phone, Mail } from 'lucide-react';
+import { FaWhatsapp } from "react-icons/fa";
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
 import { settingsAPI, contactAPI } from '@/lib/api';
@@ -45,7 +46,7 @@ const Footer: React.FC = () => {
             fa: settings.site_name?.value_fa
           });
         }
-        
+
         // Update social links from settings
         setSocialLinks([
           { icon: Instagram, href: settings.instagram?.value || '', label: 'Instagram', key: 'instagram' },
@@ -61,17 +62,17 @@ const Footer: React.FC = () => {
           if (contactSettings.whatsapp?.value) {
             setWhatsappNumber(contactSettings.whatsapp.value.replace(/[^0-9+]/g, ''));
           }
-          
+
           setContactInfo({
-            address: { 
+            address: {
               en: contactSettings.address?.value || 'Kabul, Shahr-e-Naw, Main Road, No. 123',
               fa: contactSettings.address?.value_fa || 'هرات ،  جاده قمندانی، پلاک ۱۲۳'
             },
-            phone: { 
+            phone: {
               en: contactSettings.phone?.value || '+93-799-123456',
               fa: contactSettings.phone?.value_fa || '۰۷۹۹-۱۲۳۴۵۶'
             },
-            email: { 
+            email: {
               en: contactSettings.email?.value || 'info@polad.af',
               fa: contactSettings.email?.value_fa || 'info@polad.af'
             },
@@ -90,7 +91,7 @@ const Footer: React.FC = () => {
     { path: '/about', label: t('nav.about') },
     { path: '/contact', label: t('nav.contact') },
   ];
-  
+
   const lang = language === 'fa' ? 'fa' : 'en';
 
   return (
@@ -100,57 +101,63 @@ const Footer: React.FC = () => {
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex justify-center items-center flex-col">
-                <Link to="/" className="flex items-center gap-2">
-              {logoUrl ? (
-                <img 
-                  src={logoUrl} 
-                  alt="Logo" 
-                  className="w-10 h-10 rounded-full object-contain"
-                />
-              ) : (
-                <div className="w-10 h-10 rounded-full racing-gradient flex items-center justify-center glow-effect">
-                  <span className="text-primary-foreground font-bold text-lg">M</span>
-                </div>
-              )}
-              <span className={cn(
-                "font-bold text-xl text-foreground",
-                isRTL ? "font-vazir" : "font-poppins"
+              <Link to="/" className="flex items-center gap-2">
+                {logoUrl ? (
+                  <img
+                    src={logoUrl}
+                    alt="Logo"
+                    className="w-10 h-10 rounded-full object-contain"
+                  />
+                ) : (
+                  <div className="w-10 h-10 rounded-full racing-gradient flex items-center justify-center glow-effect">
+                    <span className="text-primary-foreground font-bold text-lg">F</span>
+                  </div>
+                )}
+                <span className={cn(
+                  "font-bold text-xl text-foreground",
+                  isRTL ? "font-vazir" : "font-poppins"
+                )}>
+                  {isRTL ? siteName.fa : siteName.en}
+                </span>
+              </Link>
+              <p className={cn(
+                "text-muted-foreground text-sm leading-relaxed",
+                isRTL ? "font-vazir" : ""
               )}>
-                {isRTL ? siteName.fa : siteName.en}
-              </span>
-            </Link>
-            <p className={cn(
-              "text-muted-foreground text-sm leading-relaxed",
-              isRTL ? "font-vazir" : ""
-            )}>
-              {t('footer.description')}
-            </p>
+                {t('footer.description')}
+              </p>
             </div>
-          
+
             <div className="flex gap-3 justify-center items-center">
               {whatsappNumber && (
                 <a
                   href={`https://wa.me/${whatsappNumber}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-full bg-green-600 flex items-center justify-center text-white hover:bg-green-700 transition-colors duration-300"
+                  className="w-9 h-9 rounded-full bg-muted text-green-500 flex items-center justify-center hover:bg-green-700 hover:text-primary-foreground transition-colors duration-300"
                   aria-label="WhatsApp"
                 >
-                  <MessageCircle className="h-4 w-4" />
+                  <FaWhatsapp className="w-5 h-5"/>
                 </a>
               )}
-              {socialLinks.filter(s => s.href && s.href !== '#' && s.href !== '').map((social) => (
-                <a
-                  key={social.key}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-colors duration-300"
-                  aria-label={social.label}
-                >
-                  <social.icon className="h-4 w-4" />
-                </a>
-              ))}
+              {socialLinks
+                .filter(s => s.href && s.href !== '#' && s.href !== '')
+                .map((social) => (
+                  <a
+                    key={social.key}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors duration-300
+        ${social.key === 'facebook'
+                        ? 'bg-muted text-blue-500 hover:bg-blue-700 hover:text-primary-foreground'
+                        : 'bg-muted text-red-400 hover:bg-red-400 hover:text-primary-foreground'
+                      }`}
+                    aria-label={social.label}
+                  >
+                    <social.icon className="h-4 w-4" />
+                  </a>
+                ))}
             </div>
           </div>
 
@@ -224,7 +231,7 @@ const Footer: React.FC = () => {
               "text-muted-foreground text-sm mb-4",
               isRTL ? "font-vazir" : ""
             )}>
-              {isRTL 
+              {isRTL
                 ? 'ما را در شبکه‌های اجتماعی دنبال کنید'
                 : 'Follow us on social media'
               }
@@ -235,10 +242,10 @@ const Footer: React.FC = () => {
                   href={`https://wa.me/${whatsappNumber}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-lg bg-green-600 flex items-center justify-center text-white hover:bg-green-700 transition-all duration-300 hover:scale-110"
+                  className="w-10 h-10 rounded-lg bg-muted text-green-500 flex items-center justify-center hover:bg-green-700 hover:text-primary-foreground transition-colors duration-300"
                   aria-label="WhatsApp"
                 >
-                  <MessageCircle className="h-5 w-5" />
+                  <FaWhatsapp className="w-5 h-5"/>
                 </a>
               )}
               {socialLinks.filter(s => s.href && s.href !== '#' && s.href !== '').map((social) => (
@@ -247,7 +254,11 @@ const Footer: React.FC = () => {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:scale-110"
+                  className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors duration-300
+        ${social.key === 'facebook'
+                        ? 'bg-muted text-blue-500 hover:bg-blue-700 hover:text-primary-foreground'
+                        : 'bg-muted text-red-400 hover:bg-red-400 hover:text-primary-foreground'
+                      }`}
                   aria-label={social.label}
                 >
                   <social.icon className="h-5 w-5" />
@@ -263,7 +274,7 @@ const Footer: React.FC = () => {
             "text-muted-foreground text-sm",
             isRTL ? "font-vazir" : ""
           )}>
-             {isRTL ? siteName.fa : siteName.en}. {t('footer.rights')}.
+            {isRTL ? siteName.fa : siteName.en}. {t('footer.rights')}.
           </p>
         </div>
       </div>
