@@ -27,18 +27,56 @@ router.get('/:id', (req, res) => {
   }
 });
 
-// Create or update page (admin only)
+// Create new page (admin only)
+router.post('/', authMiddleware, (req, res) => {
+  try {
+    const { id, title, title_fa, content, content_fa, meta_description, meta_description_fa } = req.body;
+
+    if (!id || !title || !title_fa) {
+      return res.status(400).json({ error: 'ID, title and title_fa are required' });
+    }
+
+    // Check if page already exists
+    const existing = prepare('SELECT id FROM pages WHERE id = ?').get(id);
+    if (existing) {
+      return res.status(400).json({ error: 'Page with this ID already exists' });
+    }
+
+    prepare(`
+      INSERT INTO pages (id, title, title_fa, content, content_fa, meta_description, meta_description_fa)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `).run(id, title, title_fa, content || '', content_fa || '', meta_description || '', meta_description_fa || '');
+
+    res.json({ id, message: 'Page created successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Update page (admin only)
 router.put('/:id', authMiddleware, (req, res) => {
   try {
     const { id } = req.params;
     const { title, title_fa, content, content_fa, meta_description, meta_description_fa } = req.body;
 
     prepare(`
-      INSERT OR REPLACE INTO pages (id, title, title_fa, content, content_fa, meta_description, meta_description_fa)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
-    `).run(id, title, title_fa, content, content_fa, meta_description, meta_description_fa);
+      UPDATE pages SET title = ?, title_fa = ?, content = ?, content_fa = ?, meta_description = ?, meta_description_fa = ?
+      WHERE id = ?
+    `).run(title, title_fa, content, content_fa, meta_description, meta_description_fa, id);
 
     res.json({ message: 'Page updated successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Delete page (admin only)
+router.delete('/:id', authMiddleware, (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    prepare('DELETE FROM pages WHERE id = ?').run(id);
+    res.json({ message: 'Page deleted successfully' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

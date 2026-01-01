@@ -29,13 +29,13 @@ router.get('/all', authMiddleware, (req, res) => {
 // Create slide (admin only)
 router.post('/', authMiddleware, upload.single('image'), (req, res) => {
   try {
-    const { title, title_fa, subtitle, subtitle_fa, button_text, button_text_fa, button_link, sort_order, active } = req.body;
+    const { media_type, sort_order, active } = req.body;
     const image = req.file ? `/uploads/${req.file.filename}` : req.body.image;
 
     const result = prepare(`
-      INSERT INTO slides (title, title_fa, subtitle, subtitle_fa, image, button_text, button_text_fa, button_link, sort_order, active)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `).run(title, title_fa, subtitle, subtitle_fa, image, button_text, button_text_fa, button_link, sort_order || 0, active ? 1 : 0);
+      INSERT INTO slides (title, title_fa, subtitle, subtitle_fa, image, media_type, button_text, button_text_fa, button_link, sort_order, active)
+      VALUES ('', '', '', '', ?, ?, '', '', '', ?, ?)
+    `).run(image, media_type || 'image', sort_order || 0, active ? 1 : 0);
 
     res.json({ id: result.lastInsertRowid, message: 'Slide created successfully' });
   } catch (error) {
@@ -53,7 +53,7 @@ router.put('/:id', authMiddleware, upload.single('image'), (req, res) => {
       return res.status(404).json({ error: 'Slide not found' });
     }
 
-    const { title, title_fa, subtitle, subtitle_fa, button_text, button_text_fa, button_link, sort_order, active } = req.body;
+    const { media_type, sort_order, active } = req.body;
     const newImage = req.file ? `/uploads/${req.file.filename}` : req.body.image;
     const image = newImage || existing.image;
 
@@ -64,10 +64,9 @@ router.put('/:id', authMiddleware, upload.single('image'), (req, res) => {
 
     prepare(`
       UPDATE slides SET 
-        title = ?, title_fa = ?, subtitle = ?, subtitle_fa = ?, image = ?,
-        button_text = ?, button_text_fa = ?, button_link = ?, sort_order = ?, active = ?
+        image = ?, media_type = ?, sort_order = ?, active = ?
       WHERE id = ?
-    `).run(title, title_fa, subtitle, subtitle_fa, image, button_text, button_text_fa, button_link, sort_order || 0, active ? 1 : 0, id);
+    `).run(image, media_type || 'image', sort_order || 0, active ? 1 : 0, id);
 
     res.json({ message: 'Slide updated successfully' });
   } catch (error) {

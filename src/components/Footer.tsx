@@ -4,7 +4,7 @@ import { Instagram, Twitter, Facebook, Youtube, MapPin, Phone, Mail } from 'luci
 import { FaWhatsapp } from "react-icons/fa";
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
-import { settingsAPI, contactAPI } from '@/lib/api';
+import { settingsAPI, contactAPI, pagesAPI } from '@/lib/api';
 import { getImageUrl } from '@/lib/imageUtils';
 
 interface SocialLink {
@@ -20,14 +20,21 @@ interface ContactInfo {
   email: { en: string; fa: string };
 }
 
+interface DynamicPage {
+  id: string;
+  title: string;
+  title_fa: string;
+}
+
 const Footer: React.FC = () => {
   const { t, isRTL, language } = useLanguage();
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [siteName, setSiteName] = useState<{ en: string; fa: string }>({ en: 'Polad Cyclet', fa: 'فولاد سکلیت' });
   const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
   const [whatsappNumber, setWhatsappNumber] = useState<string>('');
+  const [dynamicPages, setDynamicPages] = useState<DynamicPage[]>([]);
   const [contactInfo, setContactInfo] = useState<ContactInfo>({
-    address: { en: 'Kabul, Shahr-e-Naw, Main Road, No. 123', fa: 'کابل، شهر نو، سرک اصلی، پلاک ۱۲۳' },
+    address: { en: 'Kabul, Shahr-e-Naw, Main Road, No. 123', fa: 'هرات ،  جاده قمندانی، پلاک ۱۲۳' },
     phone: { en: '+93-799-123456', fa: '۰۷۹۹-۱۲۳۴۵۶' },
     email: { en: 'info@polad.af', fa: 'info@polad.af' },
   });
@@ -78,6 +85,10 @@ const Footer: React.FC = () => {
             },
           });
         }
+
+        // Fetch dynamic pages
+        const pages = await pagesAPI.getAll();
+        setDynamicPages(pages);
       } catch (error) {
         console.error('Failed to fetch settings:', error);
       }
@@ -183,6 +194,22 @@ const Footer: React.FC = () => {
                   </Link>
                 </li>
               ))}
+              {/* Dynamic Pages */}
+              {dynamicPages
+                .filter(page => page.id !== 'about' && page.id !== 'contact')
+                .map((page) => (
+                  <li key={page.id}>
+                    <Link
+                      to={`/page/${page.id}`}
+                      className={cn(
+                        "text-muted-foreground hover:text-primary transition-colors duration-300 text-sm",
+                        isRTL ? "font-vazir" : ""
+                      )}
+                    >
+                      {isRTL ? page.title_fa : page.title}
+                    </Link>
+                  </li>
+                ))}
             </ul>
           </div>
 

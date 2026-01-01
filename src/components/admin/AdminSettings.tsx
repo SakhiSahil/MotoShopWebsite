@@ -9,9 +9,8 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { settingsAPI, authAPI, faqAPI, uploadAPI } from "@/lib/api";
-import { Loader2, Save, Settings, BarChart3, Lock, HelpCircle, Plus, Pencil, Trash2, Image, Video, Users, Bike, Award, Clock, Wrench, MapPin, Star, Shield, GripVertical, HardDrive, Trash } from "lucide-react";
+import { Loader2, Save, Settings, BarChart3, Lock, HelpCircle, Plus, Pencil, Trash2, Image, Users, Bike, Award, Clock, Wrench, MapPin, Star, Shield, GripVertical, HardDrive, Trash } from "lucide-react";
 import { ImageUpload } from "./ImageUpload";
-import { VideoUpload } from "./VideoUpload";
 import {
   Dialog,
   DialogContent,
@@ -432,10 +431,6 @@ const AdminSettings = () => {
               <BarChart3 className="w-4 h-4" />
               آمار
             </TabsTrigger>
-            <TabsTrigger value="videos" className="flex items-center gap-2">
-              <Video className="w-4 h-4" />
-              ویدیوها
-            </TabsTrigger>
             <TabsTrigger value="faq" className="flex items-center gap-2">
               <HelpCircle className="w-4 h-4" />
               سوالات متداول
@@ -676,107 +671,6 @@ const AdminSettings = () => {
                 </div>
               )}
             </div>
-          </TabsContent>
-
-          <TabsContent value="videos">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-6">
-                <div className="p-4 border rounded-lg bg-muted/30">
-                  <h3 className="font-medium mb-4">ویدیو ۱</h3>
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                    <VideoUpload
-                      label="فایل ویدیو"
-                      value={settings.video_1?.value || ''}
-                      onChange={(url) => updateSetting('video_1', 'value', url)}
-                    />
-                    <div className="space-y-4">
-                      <div className="space-y-2">
-                        <Label>عنوان (انگلیسی)</Label>
-                        <Input
-                          value={settings.video_1_title?.value || ''}
-                          onChange={(e) => updateSetting('video_1_title', 'value', e.target.value)}
-                          placeholder="Video 1"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label>عنوان (فارسی)</Label>
-                        <Input
-                          value={settings.video_1_title?.value_fa || ''}
-                          onChange={(e) => updateSetting('video_1_title', 'value_fa', e.target.value)}
-                          placeholder="ویدیو ۱"
-                          dir="rtl"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-4 border rounded-lg bg-muted/30">
-                  <h3 className="font-medium mb-4">ویدیو ۲</h3>
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                    <VideoUpload
-                      label="فایل ویدیو"
-                      value={settings.video_2?.value || ''}
-                      onChange={(url) => updateSetting('video_2', 'value', url)}
-                    />
-                    <div className="space-y-4">
-                      <div className="space-y-2">
-                        <Label>عنوان (انگلیسی)</Label>
-                        <Input
-                          value={settings.video_2_title?.value || ''}
-                          onChange={(e) => updateSetting('video_2_title', 'value', e.target.value)}
-                          placeholder="Video 2"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label>عنوان (فارسی)</Label>
-                        <Input
-                          value={settings.video_2_title?.value_fa || ''}
-                          onChange={(e) => updateSetting('video_2_title', 'value_fa', e.target.value)}
-                          placeholder="ویدیو ۲"
-                          dir="rtl"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-4 border rounded-lg bg-muted/30">
-                  <h3 className="font-medium mb-4">ویدیو ۳</h3>
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                    <VideoUpload
-                      label="فایل ویدیو"
-                      value={settings.video_3?.value || ''}
-                      onChange={(url) => updateSetting('video_3', 'value', url)}
-                    />
-                    <div className="space-y-4">
-                      <div className="space-y-2">
-                        <Label>عنوان (انگلیسی)</Label>
-                        <Input
-                          value={settings.video_3_title?.value || ''}
-                          onChange={(e) => updateSetting('video_3_title', 'value', e.target.value)}
-                          placeholder="Video 3"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label>عنوان (فارسی)</Label>
-                        <Input
-                          value={settings.video_3_title?.value_fa || ''}
-                          onChange={(e) => updateSetting('video_3_title', 'value_fa', e.target.value)}
-                          placeholder="ویدیو ۳"
-                          dir="rtl"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <Button type="submit" disabled={saving}>
-                {saving ? <Loader2 className="w-4 h-4 animate-spin ml-2" /> : <Save className="w-4 h-4 ml-2" />}
-                ذخیره ویدیوها
-              </Button>
-            </form>
           </TabsContent>
 
           <TabsContent value="faq">

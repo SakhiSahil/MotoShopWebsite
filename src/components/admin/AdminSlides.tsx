@@ -1,35 +1,32 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { slidesAPI } from "@/lib/api";
-import { Plus, Pencil, Trash2, Loader2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, Image, Video } from "lucide-react";
 import { ImageUpload } from "./ImageUpload";
+import { VideoUpload } from "./VideoUpload";
 import { getImageUrl } from "@/lib/imageUtils";
 
 interface Slide {
   id: number;
-  title: string;
-  title_fa: string;
-  subtitle: string;
-  subtitle_fa: string;
   image: string;
-  button_text: string;
-  button_text_fa: string;
-  button_link: string;
+  media_type: string;
   sort_order: number;
   active: number;
 }
 
 const emptySlide = {
-  title: "", title_fa: "", subtitle: "", subtitle_fa: "",
-  image: "", button_text: "", button_text_fa: "", button_link: "",
-  sort_order: 0, active: true,
+  image: "",
+  media_type: "image",
+  sort_order: 0,
+  active: true,
 };
 
 const AdminSlides = () => {
@@ -58,17 +55,20 @@ const AdminSlides = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!formData.image) {
+      toast({ title: "لطفا یک تصویر یا ویدیو انتخاب کنید", variant: "destructive" });
+      return;
+    }
+    
     setSaving(true);
 
     try {
       const form = new FormData();
-      Object.entries(formData).forEach(([key, value]) => {
-        if (typeof value === 'boolean') {
-          form.append(key, value ? '1' : '0');
-        } else {
-          form.append(key, String(value));
-        }
-      });
+      form.append('image', formData.image);
+      form.append('media_type', formData.media_type);
+      form.append('sort_order', String(formData.sort_order));
+      form.append('active', formData.active ? '1' : '0');
 
       if (editingSlide) {
         await slidesAPI.update(editingSlide.id, form);
@@ -104,14 +104,8 @@ const AdminSlides = () => {
   const openEditDialog = (slide: Slide) => {
     setEditingSlide(slide);
     setFormData({
-      title: slide.title,
-      title_fa: slide.title_fa,
-      subtitle: slide.subtitle,
-      subtitle_fa: slide.subtitle_fa,
       image: slide.image,
-      button_text: slide.button_text || '',
-      button_text_fa: slide.button_text_fa || '',
-      button_link: slide.button_link || '',
+      media_type: slide.media_type || 'image',
       sort_order: slide.sort_order,
       active: Boolean(slide.active),
     });
@@ -122,6 +116,10 @@ const AdminSlides = () => {
     setEditingSlide(null);
     setFormData(emptySlide);
     setDialogOpen(true);
+  };
+
+  const handleMediaTypeChange = (value: string) => {
+    setFormData({ ...formData, media_type: value, image: "" });
   };
 
   if (loading) {
@@ -143,80 +141,52 @@ const AdminSlides = () => {
               افزودن اسلاید
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-lg" dir="rtl">
             <DialogHeader>
               <DialogTitle>
                 {editingSlide ? "ویرایش اسلاید" : "افزودن اسلاید جدید"}
               </DialogTitle>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>عنوان (انگلیسی)</Label>
-                  <Input
-                    value={formData.title}
-                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>عنوان (فارسی)</Label>
-                  <Input
-                    value={formData.title_fa}
-                    onChange={(e) => setFormData({ ...formData, title_fa: e.target.value })}
-                    required
-                    dir="rtl"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>زیرعنوان (انگلیسی)</Label>
-                  <Input
-                    value={formData.subtitle}
-                    onChange={(e) => setFormData({ ...formData, subtitle: e.target.value })}
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>زیرعنوان (فارسی)</Label>
-                  <Input
-                    value={formData.subtitle_fa}
-                    onChange={(e) => setFormData({ ...formData, subtitle_fa: e.target.value })}
-                    required
-                    dir="rtl"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>متن دکمه (انگلیسی)</Label>
-                  <Input
-                    value={formData.button_text}
-                    onChange={(e) => setFormData({ ...formData, button_text: e.target.value })}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>متن دکمه (فارسی)</Label>
-                  <Input
-                    value={formData.button_text_fa}
-                    onChange={(e) => setFormData({ ...formData, button_text_fa: e.target.value })}
-                    dir="rtl"
-                  />
-                </div>
+              {/* Media Type Selection */}
+              <div className="space-y-3">
+                <Label>نوع رسانه</Label>
+                <RadioGroup
+                  value={formData.media_type}
+                  onValueChange={handleMediaTypeChange}
+                  className="flex gap-4"
+                >
+                  <div className="flex items-center gap-2">
+                    <RadioGroupItem value="image" id="type-image" />
+                    <Label htmlFor="type-image" className="flex items-center gap-1 cursor-pointer">
+                      <Image className="w-4 h-4" />
+                      تصویر
+                    </Label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <RadioGroupItem value="video" id="type-video" />
+                    <Label htmlFor="type-video" className="flex items-center gap-1 cursor-pointer">
+                      <Video className="w-4 h-4" />
+                      ویدیو
+                    </Label>
+                  </div>
+                </RadioGroup>
               </div>
 
-              <ImageUpload
-                label="تصویر اسلاید"
-                value={formData.image}
-                onChange={(url) => setFormData({ ...formData, image: url })}
-                required
-              />
-
-              <div className="space-y-2">
-                <Label>لینک دکمه</Label>
-                <Input
-                  value={formData.button_link}
-                  onChange={(e) => setFormData({ ...formData, button_link: e.target.value })}
-                  placeholder="/products"
+              {/* Image or Video Upload */}
+              {formData.media_type === 'image' ? (
+                <ImageUpload
+                  label="تصویر اسلاید"
+                  value={formData.image}
+                  onChange={(url) => setFormData({ ...formData, image: url })}
                 />
-              </div>
+              ) : (
+                <VideoUpload
+                  label="ویدیو اسلاید"
+                  value={formData.image}
+                  onChange={(url) => setFormData({ ...formData, image: url })}
+                />
+              )}
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -224,7 +194,7 @@ const AdminSlides = () => {
                   <Input
                     type="number"
                     value={formData.sort_order}
-                    onChange={(e) => setFormData({ ...formData, sort_order: parseInt(e.target.value) })}
+                    onChange={(e) => setFormData({ ...formData, sort_order: parseInt(e.target.value) || 0 })}
                   />
                 </div>
                 <div className="flex items-center gap-2 pt-6">
@@ -248,8 +218,8 @@ const AdminSlides = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="text-right">تصویر</TableHead>
-              <TableHead className="text-right">عنوان</TableHead>
+              <TableHead className="text-right">پیش‌نمایش</TableHead>
+              <TableHead className="text-right">نوع</TableHead>
               <TableHead className="text-right">ترتیب</TableHead>
               <TableHead className="text-right">وضعیت</TableHead>
               <TableHead className="text-right">عملیات</TableHead>
@@ -259,13 +229,35 @@ const AdminSlides = () => {
             {slides.map((slide) => (
               <TableRow key={slide.id}>
                 <TableCell>
-                  <img
-                    src={getImageUrl(slide.image)}
-                    alt={slide.title}
-                    className="w-24 h-14 object-cover rounded"
-                  />
+                  {slide.media_type === 'video' ? (
+                    <video
+                      src={getImageUrl(slide.image)}
+                      className="w-24 h-14 object-cover rounded"
+                      muted
+                    />
+                  ) : (
+                    <img
+                      src={getImageUrl(slide.image)}
+                      alt="Slide"
+                      className="w-24 h-14 object-cover rounded"
+                    />
+                  )}
                 </TableCell>
-                <TableCell>{slide.title_fa}</TableCell>
+                <TableCell>
+                  <span className="flex items-center gap-1">
+                    {slide.media_type === 'video' ? (
+                      <>
+                        <Video className="w-4 h-4" />
+                        ویدیو
+                      </>
+                    ) : (
+                      <>
+                        <Image className="w-4 h-4" />
+                        تصویر
+                      </>
+                    )}
+                  </span>
+                </TableCell>
                 <TableCell>{slide.sort_order}</TableCell>
                 <TableCell>
                   <span className={`px-2 py-1 rounded text-xs ${slide.active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>

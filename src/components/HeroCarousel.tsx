@@ -42,6 +42,7 @@ const HeroCarousel: React.FC = () => {
     title: m.name,
     titleFa: m.nameFa,
     image: m.image,
+    media_type: 'image',
   }));
 
   if (slidesLoading && productsLoading) {
@@ -51,7 +52,7 @@ const HeroCarousel: React.FC = () => {
       </section>
     );
   }
-  // سلادیر
+
   return (
     <section className="relative h-[25vh] md:h-[90vh] w-full overflow-hidden bg-muted">
       {/* Carousel */}
@@ -62,11 +63,22 @@ const HeroCarousel: React.FC = () => {
               key={slide.id || index}
               className="flex-[0_0_100%] min-w-0 relative h-full"
             >
-              <img
-                src={getImageUrl(slide.image)}
-                alt={language === 'fa' ? slide.titleFa : slide.title}
-                className="w-full h-full object-cover"
-              />
+              {slide.media_type === 'video' ? (
+                <video
+                  src={getImageUrl(slide.image)}
+                  className="w-full h-full object-cover"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                />
+              ) : (
+                <img
+                  src={getImageUrl(slide.image)}
+                  alt={language === 'fa' ? slide.titleFa : slide.title}
+                  className="w-full h-full object-cover"
+                />
+              )}
             </div>
           ))}
         </div>

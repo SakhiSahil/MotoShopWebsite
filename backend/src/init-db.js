@@ -86,6 +86,7 @@ async function initDb() {
       subtitle TEXT NOT NULL,
       subtitle_fa TEXT NOT NULL,
       image TEXT NOT NULL,
+      media_type TEXT DEFAULT 'image',
       button_text TEXT,
       button_text_fa TEXT,
       button_link TEXT,

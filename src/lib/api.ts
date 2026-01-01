@@ -154,11 +154,18 @@ export const slidesAPI = {
 export const pagesAPI = {
   getAll: () => apiRequest('/pages'),
   getById: (id: string) => apiRequest(`/pages/${id}`),
+  create: (data: { id: string; title: string; title_fa: string; content?: string; content_fa?: string; meta_description?: string; meta_description_fa?: string }) =>
+    apiRequest('/pages', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
   update: (id: string, data: { title: string; title_fa: string; content: string; content_fa: string; meta_description?: string; meta_description_fa?: string }) =>
     apiRequest(`/pages/${id}`, {
       method: 'PUT',
       body: JSON.stringify(data),
     }),
+  delete: (id: string) =>
+    apiRequest(`/pages/${id}`, { method: 'DELETE' }),
 };
 
 // Categories API
