@@ -66,7 +66,7 @@ const HeroCarousel: React.FC = () => {
               {slide.media_type === 'video' ? (
                 <video
                   src={getImageUrl(slide.image)}
-                  className="w-full h-full object-fill"
+                  className="w-full h-full object-cover"
                   autoPlay
                   loop
                   muted
