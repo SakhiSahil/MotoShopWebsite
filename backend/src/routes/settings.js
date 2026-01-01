@@ -1,6 +1,7 @@
 const express = require('express');
 const { prepare } = require('../database');
 const { authMiddleware } = require('../middleware/auth');
+const { deleteFile } = require('../fileManager');
 
 const router = express.Router();
 
@@ -34,6 +35,18 @@ router.put('/:key', authMiddleware, (req, res) => {
     const { key } = req.params;
     const { value, value_fa } = req.body;
 
+    // Check if this is a file setting and delete old file if exists
+    const existing = prepare('SELECT value, value_fa FROM settings WHERE key = ?').get(key);
+    if (existing) {
+      // Delete old files if they are upload paths and being replaced
+      if (existing.value && existing.value.includes('/uploads/') && value !== existing.value) {
+        deleteFile(existing.value);
+      }
+      if (existing.value_fa && existing.value_fa.includes('/uploads/') && value_fa !== existing.value_fa) {
+        deleteFile(existing.value_fa);
+      }
+    }
+
     prepare('INSERT OR REPLACE INTO settings (key, value, value_fa) VALUES (?, ?, ?)').run(key, value, value_fa);
 
     res.json({ message: 'Setting updated successfully' });
@@ -50,6 +63,18 @@ router.put('/', authMiddleware, (req, res) => {
     for (const [key, data] of Object.entries(settings)) {
       const value = data.value || '';
       const value_fa = data.value_fa || '';
+      
+      // Check if this is a file setting and delete old file if exists
+      const existing = prepare('SELECT value, value_fa FROM settings WHERE key = ?').get(key);
+      if (existing) {
+        if (existing.value && existing.value.includes('/uploads/') && value !== existing.value) {
+          deleteFile(existing.value);
+        }
+        if (existing.value_fa && existing.value_fa.includes('/uploads/') && value_fa !== existing.value_fa) {
+          deleteFile(existing.value_fa);
+        }
+      }
+      
       prepare('INSERT OR REPLACE INTO settings (key, value, value_fa) VALUES (?, ?, ?)').run(key, value, value_fa);
     }
 

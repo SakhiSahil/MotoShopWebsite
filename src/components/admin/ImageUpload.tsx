@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Upload, X, Image as ImageIcon, Loader2, Eye } from "lucide-react";
-import { getAuthToken } from "@/lib/api";
+import { getAuthToken, uploadAPI } from "@/lib/api";
 import { getImageUrl } from "@/lib/imageUtils";
 import { cn } from "@/lib/utils";
 
@@ -15,6 +15,13 @@ interface ImageUploadProps {
   onChange: (url: string) => void;
   required?: boolean;
 }
+
+// Helper to extract filename from URL
+const getFilenameFromUrl = (url: string): string | null => {
+  if (!url) return null;
+  const match = url.match(/\/uploads\/([^?#]+)/);
+  return match ? match[1] : null;
+};
 
 export const ImageUpload = ({ label, value, onChange, required }: ImageUploadProps) => {
   const [uploading, setUploading] = useState(false);
@@ -31,6 +38,9 @@ export const ImageUpload = ({ label, value, onChange, required }: ImageUploadPro
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    // Store old value to delete after successful upload
+    const oldValue = value;
 
     // Create local preview immediately
     const objectUrl = URL.createObjectURL(file);
@@ -57,6 +67,16 @@ export const ImageUpload = ({ label, value, onChange, required }: ImageUploadPro
         // Clean up local preview after successful upload
         URL.revokeObjectURL(objectUrl);
         setLocalPreview(null);
+        
+        // Delete old file from server if it exists and is different
+        const oldFilename = getFilenameFromUrl(oldValue);
+        if (oldFilename && oldValue !== result.url) {
+          try {
+            await uploadAPI.deleteFile(oldFilename);
+          } catch (e) {
+            console.log('Could not delete old file:', e);
+          }
+        }
       } else {
         throw new Error(result.error || 'Upload failed');
       }
@@ -68,7 +88,17 @@ export const ImageUpload = ({ label, value, onChange, required }: ImageUploadPro
     }
   };
 
-  const handleRemove = () => {
+  const handleRemove = async () => {
+    // Delete file from server
+    const filename = getFilenameFromUrl(value);
+    if (filename) {
+      try {
+        await uploadAPI.deleteFile(filename);
+      } catch (e) {
+        console.log('Could not delete file:', e);
+      }
+    }
+    
     if (localPreview) {
       URL.revokeObjectURL(localPreview);
     }
@@ -174,6 +204,13 @@ export const MultiImageUpload = ({ label, value, onChange }: MultiImageUploadPro
   const [localPreviews, setLocalPreviews] = useState<{ url: string; uploading: boolean }[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Helper to extract filename from URL
+  const getFilenameFromUrl = (url: string): string | null => {
+    if (!url) return null;
+    const match = url.match(/\/uploads\/([^?#]+)/);
+    return match ? match[1] : null;
+  };
+
   const handleFilesChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
@@ -223,7 +260,19 @@ export const MultiImageUpload = ({ label, value, onChange }: MultiImageUploadPro
     }
   };
 
-  const handleRemove = (index: number) => {
+  const handleRemove = async (index: number) => {
+    const urlToRemove = value[index];
+    const filename = getFilenameFromUrl(urlToRemove);
+    
+    // Delete from server
+    if (filename) {
+      try {
+        await uploadAPI.deleteFile(filename);
+      } catch (e) {
+        console.log('Could not delete file:', e);
+      }
+    }
+    
     const newUrls = value.filter((_, i) => i !== index);
     onChange(newUrls);
   };

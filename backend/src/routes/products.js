@@ -3,6 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 const { prepare } = require('../database');
 const { authMiddleware } = require('../middleware/auth');
 const upload = require('../upload');
+const { deleteFile, deleteFiles } = require('../fileManager');
 
 const router = express.Router();
 
@@ -100,8 +101,25 @@ router.put('/:id', authMiddleware, upload.single('image'), (req, res) => {
       featured, in_stock, inStock
     } = req.body;
 
-    const image = req.file ? `/uploads/${req.file.filename}` : (req.body.image || existing.image);
-    const gallery = req.body.gallery ? JSON.stringify(JSON.parse(req.body.gallery)) : existing.gallery;
+    const newImage = req.file ? `/uploads/${req.file.filename}` : req.body.image;
+    const image = newImage || existing.image;
+    
+    // Delete old image if new one is provided and different
+    if (newImage && existing.image && newImage !== existing.image) {
+      deleteFile(existing.image);
+    }
+
+    // Handle gallery - delete removed images
+    const existingGallery = JSON.parse(existing.gallery || '[]');
+    const newGallery = req.body.gallery ? JSON.parse(req.body.gallery) : existingGallery;
+    
+    // Find images that were removed from gallery
+    const removedFromGallery = existingGallery.filter(url => !newGallery.includes(url));
+    if (removedFromGallery.length > 0) {
+      deleteFiles(removedFromGallery);
+    }
+
+    const gallery = JSON.stringify(newGallery);
     const isFeatured = parseBool(featured);
     const isInStock = parseBool(in_stock) || parseBool(inStock);
 
@@ -130,10 +148,26 @@ router.put('/:id', authMiddleware, upload.single('image'), (req, res) => {
 // Delete product (admin only)
 router.delete('/:id', authMiddleware, (req, res) => {
   try {
-    const result = prepare('DELETE FROM products WHERE id = ?').run(req.params.id);
-    if (result.changes === 0) {
+    const existing = prepare('SELECT image, gallery FROM products WHERE id = ?').get(req.params.id);
+    
+    if (!existing) {
       return res.status(404).json({ error: 'Product not found' });
     }
+    
+    // Delete main image
+    if (existing.image) {
+      deleteFile(existing.image);
+    }
+    
+    // Delete gallery images
+    try {
+      const gallery = JSON.parse(existing.gallery || '[]');
+      if (gallery.length > 0) {
+        deleteFiles(gallery);
+      }
+    } catch (e) {}
+    
+    prepare('DELETE FROM products WHERE id = ?').run(req.params.id);
     res.json({ message: 'Product deleted successfully' });
   } catch (error) {
     res.status(500).json({ error: error.message });

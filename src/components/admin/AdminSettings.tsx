@@ -8,8 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { settingsAPI, authAPI, faqAPI } from "@/lib/api";
-import { Loader2, Save, Settings, BarChart3, Lock, HelpCircle, Plus, Pencil, Trash2, Image, Video, Users, Bike, Award, Clock, Wrench, MapPin, Star, Shield, GripVertical } from "lucide-react";
+import { settingsAPI, authAPI, faqAPI, uploadAPI } from "@/lib/api";
+import { Loader2, Save, Settings, BarChart3, Lock, HelpCircle, Plus, Pencil, Trash2, Image, Video, Users, Bike, Award, Clock, Wrench, MapPin, Star, Shield, GripVertical, HardDrive, Trash } from "lucide-react";
 import { ImageUpload } from "./ImageUpload";
 import { VideoUpload } from "./VideoUpload";
 import {
@@ -52,6 +52,19 @@ interface Stat {
   value: string;
   icon: string;
   sort_order: number;
+}
+
+interface StorageStats {
+  totalFiles: number;
+  totalSize: number;
+  totalSizeMB: string;
+  files: Array<{
+    filename: string;
+    url: string;
+    size: number;
+    createdAt: string;
+    modifiedAt: string;
+  }>;
 }
 
 const siteSettingsFields = [
@@ -114,6 +127,11 @@ const AdminSettings = () => {
     sort_order: 0,
     active: true,
   });
+
+  // Storage state
+  const [storageStats, setStorageStats] = useState<StorageStats | null>(null);
+  const [storageLoading, setStorageLoading] = useState(false);
+  const [cleanupLoading, setCleanupLoading] = useState(false);
   
   const { toast } = useToast();
 
@@ -152,10 +170,39 @@ const AdminSettings = () => {
     }
   };
 
+  const fetchStorageStats = async () => {
+    setStorageLoading(true);
+    try {
+      const data = await uploadAPI.getStats();
+      setStorageStats(data);
+    } catch (error) {
+      toast({ title: "خطا در دریافت آمار فضا", variant: "destructive" });
+    } finally {
+      setStorageLoading(false);
+    }
+  };
+
+  const handleCleanup = async () => {
+    setCleanupLoading(true);
+    try {
+      const result = await uploadAPI.cleanup();
+      toast({
+        title: "پاکسازی انجام شد",
+        description: `${result.deletedFiles} فایل حذف شد (${result.freedSpaceMB} مگابایت آزاد شد)`,
+      });
+      fetchStorageStats();
+    } catch (error) {
+      toast({ title: "خطا در پاکسازی", variant: "destructive" });
+    } finally {
+      setCleanupLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchSettings();
     fetchStats();
     fetchFaqs();
+    fetchStorageStats();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -396,6 +443,10 @@ const AdminSettings = () => {
             <TabsTrigger value="password" className="flex items-center gap-2">
               <Lock className="w-4 h-4" />
               رمز عبور
+            </TabsTrigger>
+            <TabsTrigger value="storage" className="flex items-center gap-2">
+              <HardDrive className="w-4 h-4" />
+              فضای ذخیره‌سازی
             </TabsTrigger>
           </TabsList>
 
@@ -939,6 +990,99 @@ const AdminSettings = () => {
                 تغییر رمز عبور
               </Button>
             </form>
+          </TabsContent>
+
+          <TabsContent value="storage">
+            <div className="space-y-6">
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-medium">مدیریت فضای ذخیره‌سازی</h3>
+                <div className="flex gap-2">
+                  <Button variant="outline" onClick={fetchStorageStats} disabled={storageLoading}>
+                    {storageLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "بروزرسانی"}
+                  </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="destructive" disabled={cleanupLoading}>
+                        {cleanupLoading ? <Loader2 className="w-4 h-4 animate-spin ml-2" /> : <Trash className="w-4 h-4 ml-2" />}
+                        پاکسازی فایل‌های بلااستفاده
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>پاکسازی فایل‌های بلااستفاده</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          این عملیات فایل‌هایی که در دیتابیس استفاده نشده‌اند را حذف می‌کند.
+                          آیا مطمئن هستید؟
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>انصراف</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleCleanup}>
+                          پاکسازی
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
+              </div>
+
+              {storageLoading ? (
+                <div className="flex justify-center py-8">
+                  <Loader2 className="w-6 h-6 animate-spin" />
+                </div>
+              ) : storageStats ? (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="p-4 border rounded-lg bg-muted/30">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-primary/10 rounded-lg">
+                          <HardDrive className="w-5 h-5 text-primary" />
+                        </div>
+                        <div>
+                          <p className="text-2xl font-bold">{storageStats.totalSizeMB} MB</p>
+                          <p className="text-sm text-muted-foreground">حجم کل فایل‌ها</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-4 border rounded-lg bg-muted/30">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-primary/10 rounded-lg">
+                          <Image className="w-5 h-5 text-primary" />
+                        </div>
+                        <div>
+                          <p className="text-2xl font-bold">{storageStats.totalFiles}</p>
+                          <p className="text-sm text-muted-foreground">تعداد فایل‌ها</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-4 border rounded-lg bg-muted/30">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-green-500/10 rounded-lg">
+                          <Shield className="w-5 h-5 text-green-500" />
+                        </div>
+                        <div>
+                          <p className="text-2xl font-bold text-green-500">فعال</p>
+                          <p className="text-sm text-muted-foreground">حذف خودکار</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-muted/10">
+                    <h4 className="font-medium mb-2">توضیحات:</h4>
+                    <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
+                      <li>فایل‌های قدیمی هنگام جایگزینی با فایل جدید به صورت خودکار حذف می‌شوند</li>
+                      <li>هنگام حذف محصولات، اسلایدها و برندها، فایل‌های مرتبط حذف می‌شوند</li>
+                      <li>دکمه "پاکسازی" فایل‌هایی که در دیتابیس استفاده نشده‌اند را حذف می‌کند</li>
+                    </ul>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  خطا در دریافت اطلاعات فضا
+                </div>
+              )}
+            </div>
           </TabsContent>
         </Tabs>
       </CardContent>

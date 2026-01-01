@@ -2,6 +2,7 @@ const express = require('express');
 const { prepare } = require('../database');
 const { authMiddleware } = require('../middleware/auth');
 const upload = require('../upload');
+const { deleteFile } = require('../fileManager');
 
 const router = express.Router();
 
@@ -53,7 +54,13 @@ router.put('/:id', authMiddleware, upload.single('image'), (req, res) => {
     }
 
     const { title, title_fa, subtitle, subtitle_fa, button_text, button_text_fa, button_link, sort_order, active } = req.body;
-    const image = req.file ? `/uploads/${req.file.filename}` : (req.body.image || existing.image);
+    const newImage = req.file ? `/uploads/${req.file.filename}` : req.body.image;
+    const image = newImage || existing.image;
+
+    // Delete old image if new one is uploaded and old exists
+    if (newImage && existing.image && newImage !== existing.image) {
+      deleteFile(existing.image);
+    }
 
     prepare(`
       UPDATE slides SET 
@@ -71,6 +78,13 @@ router.put('/:id', authMiddleware, upload.single('image'), (req, res) => {
 // Delete slide (admin only)
 router.delete('/:id', authMiddleware, (req, res) => {
   try {
+    const existing = prepare('SELECT image FROM slides WHERE id = ?').get(req.params.id);
+    
+    // Delete the image file
+    if (existing?.image) {
+      deleteFile(existing.image);
+    }
+    
     prepare('DELETE FROM slides WHERE id = ?').run(req.params.id);
     res.json({ message: 'Slide deleted successfully' });
   } catch (error) {

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Upload, X, Loader2, Video } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { getImageUrl } from "@/lib/imageUtils";
+import { uploadAPI } from "@/lib/api";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -11,6 +12,13 @@ interface VideoUploadProps {
   value: string;
   onChange: (url: string) => void;
 }
+
+// Helper to extract filename from URL
+const getFilenameFromUrl = (url: string): string | null => {
+  if (!url) return null;
+  const match = url.match(/\/uploads\/([^?#]+)/);
+  return match ? match[1] : null;
+};
 
 export const VideoUpload = ({ label, value, onChange }: VideoUploadProps) => {
   const [uploading, setUploading] = useState(false);
@@ -42,6 +50,8 @@ export const VideoUpload = ({ label, value, onChange }: VideoUploadProps) => {
       return;
     }
 
+    // Store old value to delete after successful upload
+    const oldValue = value;
     setUploading(true);
 
     try {
@@ -63,6 +73,17 @@ export const VideoUpload = ({ label, value, onChange }: VideoUploadProps) => {
 
       const data = await response.json();
       onChange(data.url);
+      
+      // Delete old file from server if it exists and is different
+      const oldFilename = getFilenameFromUrl(oldValue);
+      if (oldFilename && oldValue !== data.url) {
+        try {
+          await uploadAPI.deleteFile(oldFilename);
+        } catch (e) {
+          console.log('Could not delete old file:', e);
+        }
+      }
+      
       toast({
         title: "موفق",
         description: "ویدیو با موفقیت آپلود شد",
@@ -81,7 +102,16 @@ export const VideoUpload = ({ label, value, onChange }: VideoUploadProps) => {
     }
   };
 
-  const handleRemove = () => {
+  const handleRemove = async () => {
+    // Delete file from server
+    const filename = getFilenameFromUrl(value);
+    if (filename) {
+      try {
+        await uploadAPI.deleteFile(filename);
+      } catch (e) {
+        console.log('Could not delete file:', e);
+      }
+    }
     onChange('');
   };
 

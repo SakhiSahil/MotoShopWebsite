@@ -2,6 +2,7 @@ const express = require('express');
 const { prepare } = require('../database');
 const { authMiddleware } = require('../middleware/auth');
 const upload = require('../upload');
+const { deleteFile } = require('../fileManager');
 
 const router = express.Router();
 
@@ -52,7 +53,13 @@ router.put('/:id', authMiddleware, upload.single('logo'), (req, res) => {
     }
 
     const { name, name_fa, active } = req.body;
-    const logo = req.file ? `/uploads/${req.file.filename}` : (req.body.logo || existing.logo);
+    const newLogo = req.file ? `/uploads/${req.file.filename}` : req.body.logo;
+    const logo = newLogo || existing.logo;
+
+    // Delete old logo if new one is uploaded and old exists
+    if (newLogo && existing.logo && newLogo !== existing.logo) {
+      deleteFile(existing.logo);
+    }
 
     prepare(`
       UPDATE brands SET name = ?, name_fa = ?, logo = ?, active = ? WHERE id = ?
@@ -67,6 +74,13 @@ router.put('/:id', authMiddleware, upload.single('logo'), (req, res) => {
 // Delete brand (admin only)
 router.delete('/:id', authMiddleware, (req, res) => {
   try {
+    const existing = prepare('SELECT logo FROM brands WHERE id = ?').get(req.params.id);
+    
+    // Delete the logo file
+    if (existing?.logo) {
+      deleteFile(existing.logo);
+    }
+    
     prepare('DELETE FROM brands WHERE id = ?').run(req.params.id);
     res.json({ message: 'Brand deleted successfully' });
   } catch (error) {

@@ -246,6 +246,16 @@ export const faqAPI = {
     apiRequest(`/faq/${id}`, { method: 'DELETE' }),
 };
 
+// Upload/Storage API
+export const uploadAPI = {
+  deleteFile: (filename: string) =>
+    apiRequest(`/upload/${filename}`, { method: 'DELETE' }),
+  getStats: () =>
+    apiRequest('/upload/stats'),
+  cleanup: () =>
+    apiRequest('/upload/cleanup', { method: 'POST' }),
+};
+
 // Check if API is available
 export const checkAPIHealth = async (): Promise<boolean> => {
   try {
