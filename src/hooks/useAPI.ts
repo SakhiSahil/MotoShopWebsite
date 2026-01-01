@@ -9,6 +9,7 @@ export interface Slide {
   subtitle: string;
   subtitleFa: string;
   image: string;
+  media_type: string;
   buttonText?: string;
   buttonTextFa?: string;
   buttonLink?: string;
@@ -71,6 +72,7 @@ const transformSlide = (s: any): Slide => ({
   subtitle: s.subtitle,
   subtitleFa: s.subtitle_fa,
   image: s.image,
+  media_type: s.media_type || 'image',
   buttonText: s.button_text,
   buttonTextFa: s.button_text_fa,
   buttonLink: s.button_link,

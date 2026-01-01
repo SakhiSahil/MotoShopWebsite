@@ -253,6 +253,26 @@ export const faqAPI = {
     apiRequest(`/faq/${id}`, { method: 'DELETE' }),
 };
 
+// Videos API
+export const videosAPI = {
+  getAll: () => apiRequest('/videos'),
+  getAllAdmin: () => apiRequest('/videos/all'),
+  create: (data: FormData) =>
+    fetch(`${API_BASE_URL}/videos`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${authToken}` },
+      body: data,
+    }).then((r) => r.json()),
+  update: (id: number, data: FormData) =>
+    fetch(`${API_BASE_URL}/videos/${id}`, {
+      method: 'PUT',
+      headers: { Authorization: `Bearer ${authToken}` },
+      body: data,
+    }).then((r) => r.json()),
+  delete: (id: number) =>
+    apiRequest(`/videos/${id}`, { method: 'DELETE' }),
+};
+
 // Upload/Storage API
 export const uploadAPI = {
   deleteFile: (filename: string) =>

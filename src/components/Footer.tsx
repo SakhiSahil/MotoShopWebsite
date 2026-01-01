@@ -99,6 +99,7 @@ const Footer: React.FC = () => {
   const quickLinks = [
     { path: '/', label: t('nav.home') },
     { path: '/products', label: t('nav.products') },
+    { path: '/dealers', label: isRTL ? 'نمایندگی‌ها' : 'Dealers' },
     { path: '/about', label: t('nav.about') },
     { path: '/contact', label: t('nav.contact') },
   ];

@@ -18,6 +18,7 @@ const dealersRoutes = require('./routes/dealers');
 const aboutRoutes = require('./routes/about');
 const contactRoutes = require('./routes/contact');
 const faqRoutes = require('./routes/faq');
+const videosRoutes = require('./routes/videos');
 
 // Determine upload directory based on environment
 const isProduction = process.env.NODE_ENV === 'production';
@@ -63,6 +64,7 @@ app.use('/api/dealers', dealersRoutes);
 app.use('/api/about', aboutRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/faq', faqRoutes);
+app.use('/api/videos', videosRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

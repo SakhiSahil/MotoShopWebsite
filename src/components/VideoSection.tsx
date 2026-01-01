@@ -1,21 +1,24 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { settingsAPI } from '@/lib/api';
+import { videosAPI } from '@/lib/api';
 import { useScrollAnimation, getAnimationClasses } from '@/hooks/useScrollAnimation';
 import { cn } from '@/lib/utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Play, Loader2 } from 'lucide-react';
 import { getImageUrl } from '@/lib/imageUtils';
 
-interface VideoData {
+interface Video {
+  id: number;
   url: string;
   title: string;
-  titleFa: string;
+  title_fa: string;
+  sort_order: number;
+  active: number;
 }
 
 const VideoSection: React.FC = () => {
   const { isRTL } = useLanguage();
-  const [videos, setVideos] = useState<VideoData[]>([]);
+  const [videos, setVideos] = useState<Video[]>([]);
   const [activeTab, setActiveTab] = useState('0');
   const [loading, setLoading] = useState(true);
   const { isVisible, sectionRef, scrollDirection } = useScrollAnimation({ threshold: 0.15 });
@@ -24,33 +27,8 @@ const VideoSection: React.FC = () => {
   useEffect(() => {
     const fetchVideos = async () => {
       try {
-        const settings = await settingsAPI.getAll();
-        const videoList: VideoData[] = [];
-        
-        // Only add videos that have valid URLs from database
-        if (settings.video_1?.value) {
-          videoList.push({
-            url: settings.video_1.value,
-            title: settings.video_1_title?.value || 'Video 1',
-            titleFa: settings.video_1_title?.value_fa || 'ویدیو ۱'
-          });
-        }
-        if (settings.video_2?.value) {
-          videoList.push({
-            url: settings.video_2.value,
-            title: settings.video_2_title?.value || 'Video 2',
-            titleFa: settings.video_2_title?.value_fa || 'ویدیو ۲'
-          });
-        }
-        if (settings.video_3?.value) {
-          videoList.push({
-            url: settings.video_3.value,
-            title: settings.video_3_title?.value || 'Video 3',
-            titleFa: settings.video_3_title?.value_fa || 'ویدیو ۳'
-          });
-        }
-        
-        setVideos(videoList);
+        const data = await videosAPI.getAll();
+        setVideos(data);
       } catch (error) {
         console.error('Error fetching videos:', error);
         setVideos([]);
@@ -147,11 +125,11 @@ const VideoSection: React.FC = () => {
             {videos.length > 1 && (
               <TabsList className={cn(
                 "mb-6 bg-transparent border-none p-0 gap-6 h-auto",
-                videos.length === 2 ? "flex justify-center" : "flex justify-center"
+                "flex justify-center"
               )}>
                 {videos.map((video, index) => (
                   <TabsTrigger 
-                    key={index} 
+                    key={video.id} 
                     value={index.toString()}
                     className={cn(
                       "relative text-sm md:text-base py-2 px-1 bg-transparent border-none rounded-none shadow-none",
@@ -163,14 +141,14 @@ const VideoSection: React.FC = () => {
                       isRTL ? "font-vazir" : "font-poppins"
                     )}
                   >
-                    {isRTL ? video.titleFa : video.title}
+                    {isRTL ? video.title_fa : video.title}
                   </TabsTrigger>
                 ))}
               </TabsList>
             )}
 
             {videos.map((video, index) => (
-              <TabsContent key={index} value={index.toString()} className="mt-0">
+              <TabsContent key={video.id} value={index.toString()} className="mt-0">
                 <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-background border border-border/50">
                   <div className="aspect-video">
                     <video
