@@ -8,6 +8,37 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { getImageUrl } from '@/lib/imageUtils';
 
+// YouTube/Vimeo helpers
+const isYouTubeUrl = (url: string): boolean => {
+  if (!url) return false;
+  return url.includes('youtube.com') || url.includes('youtu.be');
+};
+
+const isVimeoUrl = (url: string): boolean => {
+  if (!url) return false;
+  return url.includes('vimeo.com');
+};
+
+const getYouTubeEmbedUrl = (url: string): string | null => {
+  if (!url) return null;
+  const shortMatch = url.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
+  if (shortMatch) return `https://www.youtube.com/embed/${shortMatch[1]}?autoplay=1&mute=1&loop=1&playlist=${shortMatch[1]}`;
+  const longMatch = url.match(/youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/);
+  if (longMatch) return `https://www.youtube.com/embed/${longMatch[1]}?autoplay=1&mute=1&loop=1&playlist=${longMatch[1]}`;
+  if (url.includes('youtube.com/embed/')) {
+    const embedMatch = url.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]+)/);
+    if (embedMatch) return `https://www.youtube.com/embed/${embedMatch[1]}?autoplay=1&mute=1&loop=1&playlist=${embedMatch[1]}`;
+  }
+  return null;
+};
+
+const getVimeoEmbedUrl = (url: string): string | null => {
+  if (!url) return null;
+  const match = url.match(/vimeo\.com\/(\d+)/);
+  if (match) return `https://player.vimeo.com/video/${match[1]}?autoplay=1&muted=1&loop=1&background=1`;
+  return null;
+};
+
 const HeroCarousel: React.FC = () => {
   const { isRTL, language } = useLanguage();
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -64,14 +95,32 @@ const HeroCarousel: React.FC = () => {
               className="flex-[0_0_100%] min-w-0 relative h-full"
             >
               {slide.media_type === 'video' ? (
-                <video
-                  src={getImageUrl(slide.image)}
-                  className="w-full h-full object-cover"
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                />
+                isYouTubeUrl(slide.image) ? (
+                  <iframe
+                    src={getYouTubeEmbedUrl(slide.image) || ''}
+                    className="w-full h-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    style={{ border: 'none' }}
+                  />
+                ) : isVimeoUrl(slide.image) ? (
+                  <iframe
+                    src={getVimeoEmbedUrl(slide.image) || ''}
+                    className="w-full h-full"
+                    allow="autoplay; fullscreen; picture-in-picture"
+                    allowFullScreen
+                    style={{ border: 'none' }}
+                  />
+                ) : (
+                  <video
+                    src={getImageUrl(slide.image)}
+                    className="w-full h-full object-fill"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                  />
+                )
               ) : (
                 <img
                   src={getImageUrl(slide.image)}

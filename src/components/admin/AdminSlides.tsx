@@ -14,6 +14,28 @@ import { ImageUpload } from "./ImageUpload";
 import { VideoUpload } from "./VideoUpload";
 import { getImageUrl } from "@/lib/imageUtils";
 
+// YouTube/Vimeo helpers
+const isYouTubeUrl = (url: string): boolean => {
+  if (!url) return false;
+  return url.includes('youtube.com') || url.includes('youtu.be');
+};
+
+const isVimeoUrl = (url: string): boolean => {
+  if (!url) return false;
+  return url.includes('vimeo.com');
+};
+
+const getYouTubeThumbnail = (url: string): string | null => {
+  if (!url) return null;
+  const shortMatch = url.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
+  if (shortMatch) return `https://img.youtube.com/vi/${shortMatch[1]}/mqdefault.jpg`;
+  const longMatch = url.match(/youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/);
+  if (longMatch) return `https://img.youtube.com/vi/${longMatch[1]}/mqdefault.jpg`;
+  const embedMatch = url.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]+)/);
+  if (embedMatch) return `https://img.youtube.com/vi/${embedMatch[1]}/mqdefault.jpg`;
+  return null;
+};
+
 interface Slide {
   id: number;
   image: string;
@@ -230,11 +252,23 @@ const AdminSlides = () => {
               <TableRow key={slide.id}>
                 <TableCell>
                   {slide.media_type === 'video' ? (
-                    <video
-                      src={getImageUrl(slide.image)}
-                      className="w-24 h-14 object-cover rounded"
-                      muted
-                    />
+                    isYouTubeUrl(slide.image) ? (
+                      <img
+                        src={getYouTubeThumbnail(slide.image) || ''}
+                        alt="YouTube Video"
+                        className="w-24 h-14 object-cover rounded"
+                      />
+                    ) : isVimeoUrl(slide.image) ? (
+                      <div className="w-24 h-14 bg-muted rounded flex items-center justify-center">
+                        <Video className="w-6 h-6 text-muted-foreground" />
+                      </div>
+                    ) : (
+                      <video
+                        src={getImageUrl(slide.image)}
+                        className="w-24 h-14 object-cover rounded"
+                        muted
+                      />
+                    )
                   ) : (
                     <img
                       src={getImageUrl(slide.image)}

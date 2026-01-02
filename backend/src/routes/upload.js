@@ -122,6 +122,14 @@ router.post('/cleanup', authMiddleware, (req, res) => {
       if (about?.image) usedUrls.add(about.image);
     } catch (e) {}
     
+    // Videos
+    try {
+      const videos = prepare('SELECT url FROM videos').all();
+      videos.forEach(v => {
+        if (v.url) usedUrls.add(v.url);
+      });
+    } catch (e) {}
+    
     // Find orphan files
     const orphanFiles = allFiles.filter(file => !usedUrls.has(file.url));
     
