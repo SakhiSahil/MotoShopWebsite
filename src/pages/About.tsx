@@ -96,9 +96,9 @@ const About: React.FC = () => {
           { id: 3, title: 'Service', title_fa: 'خدمات', description: 'Professional and fast after-sales service.', description_fa: 'خدمات پس از فروش حرفه‌ای و سریع.', icon: 'wrench', sort_order: 2 },
         ]);
         setTeamMembers([
-          { id: 1, name: 'Ali Mohammadi', name_fa: 'علی محمدی', role: 'CEO', role_fa: 'مدیرعامل', image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&q=80', sort_order: 0 },
-          { id: 2, name: 'Sara Ahmadi', name_fa: 'سارا احمدی', role: 'Sales Manager', role_fa: 'مدیر فروش', image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&q=80', sort_order: 1 },
-          { id: 3, name: 'Reza Karimi', name_fa: 'رضا کریمی', role: 'Technical Manager', role_fa: 'مدیر فنی', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&q=80', sort_order: 2 },
+          { id: 1, name: 'Ali Mohammadi', name_fa: 'علی محمدی', role: 'CEO', role_fa: 'مدیرعامل', image: '', sort_order: 0 },
+          { id: 2, name: 'Sara Ahmadi', name_fa: 'سارا احمدی', role: 'Sales Manager', role_fa: 'مدیر فروش', image: '', sort_order: 1 },
+          { id: 3, name: 'Reza Karimi', name_fa: 'رضا کریمی', role: 'Technical Manager', role_fa: 'مدیر فنی', image: '', sort_order: 2 },
         ]);
       } finally {
         setLoading(false);
