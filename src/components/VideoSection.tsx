@@ -16,6 +16,53 @@ interface Video {
   active: number;
 }
 
+// Helper functions for YouTube/Vimeo detection
+const isYouTubeUrl = (url: string): boolean => {
+  return /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)/.test(url);
+};
+
+const isVimeoUrl = (url: string): boolean => {
+  return /(?:vimeo\.com\/)/.test(url);
+};
+
+const getYouTubeEmbedUrl = (url: string): string => {
+  let videoId = '';
+  
+  const shortMatch = url.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
+  if (shortMatch) {
+    videoId = shortMatch[1];
+  }
+  
+  const watchMatch = url.match(/youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/);
+  if (watchMatch) {
+    videoId = watchMatch[1];
+  }
+  
+  const embedMatch = url.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]+)/);
+  if (embedMatch) {
+    videoId = embedMatch[1];
+  }
+  
+  const shortsMatch = url.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]+)/);
+  if (shortsMatch) {
+    videoId = shortsMatch[1];
+  }
+  
+  return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}` : url;
+};
+
+const getVimeoEmbedUrl = (url: string): string => {
+  const match = url.match(/vimeo\.com\/(\d+)/);
+  if (match) {
+    return `https://player.vimeo.com/video/${match[1]}?autoplay=1&muted=1&loop=1`;
+  }
+  return url;
+};
+
+const isExternalVideoUrl = (url: string): boolean => {
+  return isYouTubeUrl(url) || isVimeoUrl(url);
+};
+
 const VideoSection: React.FC = () => {
   const { isRTL } = useLanguage();
   const [videos, setVideos] = useState<Video[]>([]);
@@ -39,32 +86,45 @@ const VideoSection: React.FC = () => {
     fetchVideos();
   }, []);
 
-  // Play video when visible
+  // Play video when visible (only for local videos)
   useEffect(() => {
     if (isVisible) {
       const activeIndex = parseInt(activeTab);
-      if (videoRefs.current[activeIndex]) {
+      const activeVideo = videos[activeIndex];
+      if (activeVideo && !isExternalVideoUrl(activeVideo.url) && videoRefs.current[activeIndex]) {
         videoRefs.current[activeIndex]?.play();
       }
     }
-  }, [isVisible, activeTab]);
+  }, [isVisible, activeTab, videos]);
 
   const handleTabChange = (value: string) => {
-    // Pause current video
+    // Pause current video (only for local videos)
     const currentIndex = parseInt(activeTab);
-    if (videoRefs.current[currentIndex]) {
+    const currentVideo = videos[currentIndex];
+    if (currentVideo && !isExternalVideoUrl(currentVideo.url) && videoRefs.current[currentIndex]) {
       videoRefs.current[currentIndex]?.pause();
     }
     
     setActiveTab(value);
     
-    // Play new video
+    // Play new video (only for local videos)
     const newIndex = parseInt(value);
+    const newVideo = videos[newIndex];
     setTimeout(() => {
-      if (videoRefs.current[newIndex]) {
+      if (newVideo && !isExternalVideoUrl(newVideo.url) && videoRefs.current[newIndex]) {
         videoRefs.current[newIndex]?.play();
       }
     }, 100);
+  };
+
+  const getVideoEmbedUrl = (url: string): string => {
+    if (isYouTubeUrl(url)) {
+      return getYouTubeEmbedUrl(url);
+    }
+    if (isVimeoUrl(url)) {
+      return getVimeoEmbedUrl(url);
+    }
+    return url;
   };
 
   // Don't render if no videos
@@ -151,16 +211,26 @@ const VideoSection: React.FC = () => {
               <TabsContent key={video.id} value={index.toString()} className="mt-0">
                 <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-background border border-border/50">
                   <div className="aspect-video">
-                    <video
-                      ref={el => videoRefs.current[index] = el}
-                      src={getImageUrl(video.url)}
-                      className="w-full h-full object-cover"
-                      autoPlay={index === parseInt(activeTab) && isVisible}
-                      muted
-                      loop
-                      playsInline
-                      controls
-                    />
+                    {isExternalVideoUrl(video.url) ? (
+                      <iframe
+                        src={getVideoEmbedUrl(video.url)}
+                        className="w-full h-full"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        title={isRTL ? video.title_fa : video.title}
+                      />
+                    ) : (
+                      <video
+                        ref={el => videoRefs.current[index] = el}
+                        src={getImageUrl(video.url)}
+                        className="w-full h-full object-cover"
+                        autoPlay={index === parseInt(activeTab) && isVisible}
+                        muted
+                        loop
+                        playsInline
+                        controls
+                      />
+                    )}
                   </div>
                 </div>
               </TabsContent>
