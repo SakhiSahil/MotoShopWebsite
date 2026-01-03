@@ -87,7 +87,7 @@ const About: React.FC = () => {
           title_fa: 'داستان ما',
           content: 'With over 20 years of experience in the motorcycle industry, we are proud to have earned the trust of thousands of customers.',
           content_fa: 'ما با بیش از ۲۰ سال تجربه در صنعت موتورسیکلت، مفتخریم که توانسته‌ایم اعتماد هزاران مشتری را جلب کنیم.',
-          image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80',
+          image: '',
           years_experience: '20+',
         });
         setValues([
@@ -181,7 +181,7 @@ const About: React.FC = () => {
                 <div className="relative flex justify-center animate-slide-in-right">
                   <div className="aspect-square rounded-3xl w-[360px] md:w-[400px] overflow-hidden">
                     <img
-                      src={aboutContent?.image ? getImageUrl(aboutContent.image) : 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80'}
+                      src={aboutContent?.image ? getImageUrl(aboutContent.image) : ''}
                       alt="About us"
                       className="w-full h-full object-cover"
                     />
