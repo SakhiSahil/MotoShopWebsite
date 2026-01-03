@@ -136,7 +136,8 @@ const AdminContact: React.FC = () => {
   const unreadCount = messages.filter(m => !m.read).length;
 
   return (
-    <Tabs defaultValue="settings" className="space-y-6">
+    <div className="space-y-8">
+    <Tabs defaultValue="settings" className="space-y-6" dir='rtl'>
       <TabsList className="font-vazir">
         <TabsTrigger value="settings">تنظیمات تماس</TabsTrigger>
         <TabsTrigger value="messages" className="relative">
@@ -166,7 +167,8 @@ const AdminContact: React.FC = () => {
                   value={settings.phone?.value || ''}
                   onChange={(e) => updateSetting('phone', 'value', e.target.value)}
                   placeholder="+93 700 000 000"
-                  dir="ltr"
+                  dir='ltr'
+
                 />
               </div>
               <div className="space-y-2">
@@ -176,6 +178,7 @@ const AdminContact: React.FC = () => {
                   onChange={(e) => updateSetting('phone', 'value_fa', e.target.value)}
                   placeholder="۰۷۰۰ ۰۰۰ ۰۰۰"
                   className="font-vazir"
+                  dir='ltr'
                 />
               </div>
             </div>
@@ -191,7 +194,7 @@ const AdminContact: React.FC = () => {
                   value={settings.whatsapp?.value || ''}
                   onChange={(e) => updateSetting('whatsapp', 'value', e.target.value)}
                   placeholder="+93700000000"
-                  dir="ltr"
+                  dir='ltr'
                 />
               </div>
               <div className="space-y-2">
@@ -201,6 +204,7 @@ const AdminContact: React.FC = () => {
                   onChange={(e) => updateSetting('whatsapp', 'value_fa', e.target.value)}
                   placeholder="۰۷۰۰۰۰۰۰۰۰۰"
                   className="font-vazir"
+                  dir='ltr'
                 />
               </div>
             </div>
@@ -216,7 +220,6 @@ const AdminContact: React.FC = () => {
                   value={settings.email?.value || ''}
                   onChange={(e) => updateSetting('email', 'value', e.target.value)}
                   placeholder="info@example.com"
-                  dir="ltr"
                 />
               </div>
               <div className="space-y-2">
@@ -284,7 +287,6 @@ const AdminContact: React.FC = () => {
                 value={settings.map_url?.value || ''}
                 onChange={(e) => updateSetting('map_url', 'value', e.target.value)}
                 placeholder="https://www.google.com/maps/embed?pb=..."
-                dir="ltr"
               />
             </div>
 
@@ -305,7 +307,7 @@ const AdminContact: React.FC = () => {
             {messages.length === 0 ? (
               <p className="text-center text-muted-foreground py-8 font-vazir">هیچ پیامی دریافت نشده است</p>
             ) : (
-              <Table>
+              <Table dir="rtl">
                 <TableHeader>
                   <TableRow>
                     <TableHead className="font-vazir text-right">نام</TableHead>
@@ -367,6 +369,7 @@ const AdminContact: React.FC = () => {
         </Card>
       </TabsContent>
     </Tabs>
+    </div>
   );
 };
 

@@ -14,7 +14,6 @@ import Dealers from "./pages/Dealers";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Admin from "./pages/Admin";
-import DynamicPage from "./pages/DynamicPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,7 +32,6 @@ const AppContent = () => {
         <Route path="/dealers" element={<Dealers />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/page/:id" element={<DynamicPage />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

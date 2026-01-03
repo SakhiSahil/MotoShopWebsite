@@ -123,7 +123,7 @@ const AdminVideos = () => {
   }
 
   return (
-    <Card>
+    <Card dir="rtl">
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
           <CardTitle>مدیریت ویدیوها</CardTitle>
@@ -199,14 +199,14 @@ const AdminVideos = () => {
             هنوز ویدیویی اضافه نشده است
           </div>
         ) : (
-          <Table>
+          <Table dir="rtl">
             <TableHeader>
               <TableRow>
-                <TableHead>پیش‌نمایش</TableHead>
-                <TableHead>عنوان</TableHead>
-                <TableHead>ترتیب</TableHead>
-                <TableHead>وضعیت</TableHead>
-                <TableHead>عملیات</TableHead>
+                <TableHead className="text-right">پیش‌نمایش</TableHead>
+                <TableHead className="text-right">عنوان</TableHead>
+                <TableHead className="text-right">ترتیب</TableHead>
+                <TableHead className="text-right">وضعیت</TableHead>
+                <TableHead className="text-right">عملیات</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

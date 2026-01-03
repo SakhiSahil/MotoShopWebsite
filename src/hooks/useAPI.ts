@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { productsAPI, settingsAPI, brandsAPI, slidesAPI, pagesAPI, categoriesAPI, dealersAPI, contactAPI, faqAPI, checkAPIHealth } from '@/lib/api';
+import { productsAPI, settingsAPI, brandsAPI, slidesAPI, categoriesAPI, dealersAPI, contactAPI, faqAPI, checkAPIHealth } from '@/lib/api';
 import { motorcycles as staticMotorcycles, brands as staticBrands, Motorcycle } from '@/data/motorcycles';
 
 export interface Slide {
@@ -268,36 +268,6 @@ export const useStats = () => {
   }, []);
 
   return { stats, loading };
-};
-
-// Pages hook
-export const usePage = (pageId: string) => {
-  const [page, setPage] = useState<{ title: string; titleFa: string; content: string; contentFa: string } | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchPage = async () => {
-      try {
-        if (await isAPIAvailable()) {
-          const data = await pagesAPI.getById(pageId);
-          setPage({
-            title: data.title,
-            titleFa: data.title_fa,
-            content: data.content,
-            contentFa: data.content_fa,
-          });
-        }
-      } catch {
-        // Page content will be null, components use defaults
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPage();
-  }, [pageId]);
-
-  return { page, loading };
 };
 
 // Categories hook

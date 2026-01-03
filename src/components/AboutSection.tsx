@@ -53,7 +53,6 @@ const AboutSection: React.FC = () => {
     );
   }
 
-  const title = language === 'fa' ? about?.title_fa : about?.title;
   const content = language === 'fa' ? about?.content_fa : about?.content;
   const image = about?.image || '/placeholder.svg';
 
@@ -82,7 +81,6 @@ const AboutSection: React.FC = () => {
               "text-[12px] md:text-[14px]  text-[#7f8c8d]  mb-6 leading-tight",
               isRTL ? "font-vazir" : "font-poppins"
             )}>
-              {title}
             </h2>
         </div>
           
@@ -123,7 +121,7 @@ const AboutSection: React.FC = () => {
               <div className="relative w-80 rounded-3xl overflow-hidden shadow-2xl">
                 <img
                   src={getImageUrl(image)}
-                  alt={title || ''}
+                  alt='About Us Image'
                   className="w-80 h-80 md:h-80 object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/50 to-transparent" />

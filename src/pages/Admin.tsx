@@ -8,13 +8,12 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { authAPI, setAuthToken, getAuthToken, checkAPIHealth } from "@/lib/api";
-import { LogOut, Settings, Package, Image, FileText, Users, LayoutDashboard, AlertCircle, Tags, MapPin, Video, Info, Phone } from "lucide-react";
+import { LogOut, Settings, Package, Image, Users, LayoutDashboard, AlertCircle, Tags, MapPin, Video, Info, Phone } from "lucide-react";
 import AdminProducts from "@/components/admin/AdminProducts";
 import AdminSettings from "@/components/admin/AdminSettings";
 import AdminSlides from "@/components/admin/AdminSlides";
 import AdminVideos from "@/components/admin/AdminVideos";
 import AdminBrands from "@/components/admin/AdminBrands";
-import AdminPages from "@/components/admin/AdminPages";
 import AdminCategories from "@/components/admin/AdminCategories";
 import AdminDealers from "@/components/admin/AdminDealers";
 import AdminAbout from "@/components/admin/AdminAbout";
@@ -203,7 +202,7 @@ const Admin = () => {
 
       <main className="container mx-auto px-4 py-8">
         <Tabs defaultValue="products" dir="rtl">
-          <TabsList className="grid w-full grid-cols-10 mb-8">
+          <TabsList className="grid w-full grid-cols-9 mb-8">
             <TabsTrigger value="products" className="flex items-center gap-2">
               <Package className="w-4 h-4" />
               <span className="hidden sm:inline">محصولات</span>
@@ -236,10 +235,6 @@ const Admin = () => {
               <Phone className="w-4 h-4" />
               <span className="hidden sm:inline">تماس با ما</span>
             </TabsTrigger>
-            <TabsTrigger value="pages" className="flex items-center gap-2">
-              <FileText className="w-4 h-4" />
-              <span className="hidden sm:inline">صفحات</span>
-            </TabsTrigger>
             <TabsTrigger value="settings" className="flex items-center gap-2">
               <Settings className="w-4 h-4" />
               <span className="hidden sm:inline">تنظیمات</span>
@@ -269,9 +264,6 @@ const Admin = () => {
           </TabsContent>
           <TabsContent value="contact">
             <AdminContact />
-          </TabsContent>
-          <TabsContent value="pages">
-            <AdminPages />
           </TabsContent>
           <TabsContent value="settings">
             <AdminSettings />

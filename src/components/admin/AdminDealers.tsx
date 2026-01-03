@@ -168,7 +168,7 @@ const AdminDealers = () => {
   }
 
   return (
-    <Card>
+    <Card dir="rtl">
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="flex items-center gap-2">
           <MapPin className="w-5 h-5" />
@@ -341,15 +341,15 @@ const AdminDealers = () => {
             هنوز نمایندگی‌ای اضافه نشده است
           </div>
         ) : (
-          <Table>
+          <Table dir="rtl">
             <TableHeader>
               <TableRow>
-                <TableHead>نام</TableHead>
-                <TableHead>آدرس</TableHead>
-                <TableHead>تلفن</TableHead>
-                <TableHead>ایمیل</TableHead>
-                <TableHead>وضعیت</TableHead>
-                <TableHead>عملیات</TableHead>
+                <TableHead className="text-right">نام</TableHead>
+                <TableHead className="text-right">آدرس</TableHead>
+                <TableHead className="text-right">تلفن</TableHead>
+                <TableHead className="text-right">ایمیل</TableHead>
+                <TableHead className="text-right">وضعیت</TableHead>
+                <TableHead className="text-right">عملیات</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

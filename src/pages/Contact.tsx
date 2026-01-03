@@ -26,7 +26,7 @@ const Contact: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.name.trim() || !formData.message.trim()) {
       toast({
         title: isRTL ? 'خطا' : 'Error',
@@ -44,10 +44,10 @@ const Contact: React.FC = () => {
         phone: formData.phone.trim(),
         message: formData.message.trim(),
       });
-      
+
       toast({
         title: isRTL ? 'پیام ارسال شد!' : 'Message Sent!',
-        description: isRTL 
+        description: isRTL
           ? 'به زودی با شما تماس خواهیم گرفت.'
           : 'We will contact you soon.',
       });
@@ -66,47 +66,51 @@ const Contact: React.FC = () => {
   const lang = language === 'fa' ? 'fa' : 'en';
 
   const contactInfo = [
-    { 
-      icon: MapPin, 
+    {
+      icon: MapPin,
       title: t('contact.address'),
       value: getContactSetting('address', lang) || t('contact.addressText'),
     },
-    { 
-      icon: Phone, 
+    {
+      icon: Phone,
       title: isRTL ? 'تلفن' : 'Phone',
-      value: getContactSetting('phone', lang) || t('contact.phoneNumber'),
+      value: (
+        <span dir="ltr" >
+          {getContactSetting('phone', lang) || t('contact.phoneNumber')}
+        </span>
+      )
     },
-    { 
-      icon: Mail, 
+    {
+      icon: Mail,
       title: isRTL ? 'ایمیل' : 'Email',
       value: getContactSetting('email', lang) || t('contact.emailAddress'),
     },
-    { 
-      icon: Clock, 
+    {
+      icon: Clock,
       title: isRTL ? 'ساعات کاری' : 'Working Hours',
       value: getContactSetting('working_hours', lang) || (isRTL ? 'شنبه تا پنجشنبه: ۹ صبح تا ۶ عصر' : 'Sat - Thu: 9 AM - 6 PM'),
     },
   ];
 
-  const mapUrl = getContactSetting('map_url', 'en') || 
+  const mapUrl = getContactSetting('map_url', 'en') ||
     "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d52615.37529687997!2d69.13503772695312!3d34.55301080000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38d16eb0d2b5b7f5%3A0xfff531b6e2a3d6f8!2sKabul%2C%20Afghanistan!5e0!3m2!1sen!2s!4v1702000000000!5m2!1sen!2s";
 
   return (
     <>
       <Helmet>
         <title>{isRTL ? 'تماس با ما | فولاد سکلیت' : 'Contact Us | Polad Cyclet'}</title>
-        <meta 
-          name="description" 
-          content={isRTL 
+        <meta
+          name="description"
+          content={isRTL
             ? 'با فولاد سکلیت تماس بگیرید. آدرس، تلفن و فرم تماس.'
             : 'Contact Polad Cyclet. Address, phone, and contact form.'
-          } 
+          }
         />
       </Helmet>
 
       <div className="min-h-screen bg-background">
         <Header />
-        
+
         <main className="pt-12">
           {/* Hero */}
           <section className="py-8 md:py-12 bg-gradient-to-b from-primary/10 to-background">
@@ -259,7 +263,7 @@ const Contact: React.FC = () => {
                         ) : (
                           <Send className="h-4 w-4" />
                         )}
-                        {submitting 
+                        {submitting
                           ? (isRTL ? 'در حال ارسال...' : 'Sending...')
                           : t('contact.send')
                         }
